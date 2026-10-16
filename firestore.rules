@@ -1,0 +1,154 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --------------------------------------------------------------------------
+    // GLOBAL SECURITY HELPERS
+    // --------------------------------------------------------------------------
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'nsanjayb@gmail.com' ||
+        request.auth.token.role == 'admin' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --------------------------------------------------------------------------
+    // USERS COLLECTION RULES
+    // --------------------------------------------------------------------------
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'email', 'fullName', 'role', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'email', 'fullName', 'phone', 'role', 'createdAt']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+        data.email is string && data.email.size() > 3 && data.email.size() <= 256 &&
+        data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 120 &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 50)) &&
+        data.role in ['client', 'admin'] &&
+        data.createdAt is string;
+    }
+
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isValidId(userId) && isOwner(userId) && isValidUser(request.resource.data) &&
+                    (request.resource.data.role == 'client' || isAdmin());
+      allow update: if isValidId(userId) && (isOwner(userId) || isAdmin()) &&
+                    isValidUser(request.resource.data) &&
+                    request.resource.data.id == resource.data.id &&
+                    request.resource.data.createdAt == resource.data.createdAt &&
+                    (isAdmin() || request.resource.data.role == resource.data.role);
+      allow delete: if isValidId(userId) && isAdmin();
+    }
+
+    // --------------------------------------------------------------------------
+    // SERVICE PACKAGES RULES (Public Read, Admin Write)
+    // --------------------------------------------------------------------------
+    function isValidServicePackage(data) {
+      return data.keys().hasAll(['id', 'title', 'priceCad', 'active', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'slug', 'title', 'description', 'priceCad', 'active', 'createdAt']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+        data.title is string && data.title.size() > 0 && data.title.size() <= 150 &&
+        data.priceCad is number && data.priceCad >= 0 &&
+        data.active is bool &&
+        data.createdAt is string;
+    }
+
+    match /service_packages/{packageId} {
+      allow get: if isValidId(packageId) && (resource.data.active == true || isAdmin());
+      allow list: if true;
+      allow create: if isValidId(packageId) && isAdmin() && isValidServicePackage(request.resource.data);
+      allow update: if isValidId(packageId) && isAdmin() && isValidServicePackage(request.resource.data);
+      allow delete: if isValidId(packageId) && isAdmin();
+    }
+
+    // --------------------------------------------------------------------------
+    // BOOKINGS RULES (Authenticated Owners & Reservation Inquiries)
+    // --------------------------------------------------------------------------
+    function isValidBooking(data) {
+      return data.keys().hasAll(['id', 'clientName', 'clientEmail', 'packageId', 'bookingDate', 'timeSlot', 'status', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'userId', 'clientName', 'clientEmail', 'clientPhone', 'packageId', 'packageName', 'bookingDate', 'timeSlot', 'status', 'location', 'notes', 'totalPrice', 'createdAt']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+        data.clientName is string && data.clientName.size() > 0 && data.clientName.size() <= 120 &&
+        data.clientEmail is string && data.clientEmail.size() > 3 && data.clientEmail.size() <= 256 &&
+        data.packageId is string && data.packageId.size() > 0 && data.packageId.size() <= 128 &&
+        data.bookingDate is string && data.bookingDate.size() >= 10 && data.bookingDate.size() <= 30 &&
+        data.timeSlot is string && data.timeSlot.size() > 0 && data.timeSlot.size() <= 60 &&
+        data.status in ['pending', 'confirmed', 'completed', 'cancelled'] &&
+        (!('totalPrice' in data) || (data.totalPrice is number && data.totalPrice >= 0)) &&
+        data.createdAt is string;
+    }
+
+    match /bookings/{bookingId} {
+      allow get: if isValidId(bookingId) && (
+        isAdmin() ||
+        (isAuthenticated() && resource.data.userId == request.auth.uid) ||
+        (resource.data.clientEmail == request.auth.token.email)
+      );
+      allow list: if isAdmin() || (
+        isAuthenticated() && request.query.limit <= 50
+      );
+      allow create: if isValidId(bookingId) &&
+                    isValidBooking(request.resource.data) &&
+                    (!isAuthenticated() || !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid || isAdmin());
+      allow update: if isValidId(bookingId) && (
+        isAdmin() ||
+        (isAuthenticated() && resource.data.userId == request.auth.uid &&
+         request.resource.data.id == resource.data.id &&
+         request.resource.data.createdAt == resource.data.createdAt &&
+         request.resource.data.packageId == resource.data.packageId)
+      ) && isValidBooking(request.resource.data);
+      allow delete: if isValidId(bookingId) && isAdmin();
+    }
+
+    // --------------------------------------------------------------------------
+    // REVIEWS RULES (Public Read for Verified, Authenticated Write)
+    // --------------------------------------------------------------------------
+    function isValidReview(data) {
+      return data.keys().hasAll(['id', 'rating', 'comment', 'verified', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'userId', 'clientName', 'rating', 'comment', 'verified', 'createdAt']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+        data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+        data.comment is string && data.comment.size() > 0 && data.comment.size() <= 2000 &&
+        data.verified is bool &&
+        data.createdAt is string;
+    }
+
+    match /reviews/{reviewId} {
+      allow get: if isValidId(reviewId) && (resource.data.verified == true || isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid));
+      allow list: if true;
+      allow create: if isValidId(reviewId) &&
+                    isValidReview(request.resource.data) &&
+                    (!('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid || isAdmin()) &&
+                    (request.resource.data.verified == false || isAdmin());
+      allow update: if isValidId(reviewId) && isAdmin() && isValidReview(request.resource.data);
+      allow delete: if isValidId(reviewId) && isAdmin();
+    }
+
+    // --------------------------------------------------------------------------
+    // TEST CONNECTION RULE
+    // --------------------------------------------------------------------------
+    match /test/{docId} {
+      allow get: if true;
+    }
+
+    // --------------------------------------------------------------------------
+    // DEFAULT DENY FOR ALL OTHER COLLECTIONS
+    // --------------------------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

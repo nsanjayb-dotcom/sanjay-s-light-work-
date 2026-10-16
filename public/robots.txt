@@ -1,0 +1,7 @@
+# Robots.txt for Sanjay's Lightworks Photography
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemap Location
+Sitemap: https://ais-dev-uyqvlta5szu3h3fhwdtt2f-301400267540.us-east1.run.app/sitemap.xml

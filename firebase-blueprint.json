@@ -1,0 +1,207 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with contact information and role",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User UID matching auth.uid"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email address"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of user"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact phone number"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["client", "admin"],
+          "description": "Access control role"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account registration timestamp"
+        }
+      },
+      "required": ["id", "email", "fullName", "role", "createdAt"]
+    },
+    "ServicePackage": {
+      "title": "ServicePackage",
+      "description": "Photography service package with pricing and inclusions",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Package identifier"
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL friendly slug"
+        },
+        "title": {
+          "type": "string",
+          "description": "Package headline title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Package offerings and details"
+        },
+        "priceCad": {
+          "type": "number",
+          "description": "Price in Canadian Dollars"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether package is visible for booking"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Package creation timestamp"
+        }
+      },
+      "required": ["id", "title", "priceCad", "active", "createdAt"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Photo shoot reservation record",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique booking reservation reference"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the reserving user or client"
+        },
+        "clientName": {
+          "type": "string",
+          "description": "Full name of client"
+        },
+        "clientEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email"
+        },
+        "clientPhone": {
+          "type": "string",
+          "description": "Contact telephone"
+        },
+        "packageId": {
+          "type": "string",
+          "description": "Selected service package ID"
+        },
+        "packageName": {
+          "type": "string",
+          "description": "Selected service package name"
+        },
+        "bookingDate": {
+          "type": "string",
+          "description": "Date of scheduled shoot (YYYY-MM-DD)"
+        },
+        "timeSlot": {
+          "type": "string",
+          "description": "Preferred shoot time window"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "confirmed", "completed", "cancelled"],
+          "description": "Current reservation status"
+        },
+        "location": {
+          "type": "string",
+          "description": "Shoot venue or city location"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Shoot vision and special requests"
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "Total shoot investment in CAD"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Reservation submission timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "clientName",
+        "clientEmail",
+        "packageId",
+        "bookingDate",
+        "timeSlot",
+        "status",
+        "createdAt"
+      ]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Client testimonial and star rating",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Review record identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Author user UID"
+        },
+        "clientName": {
+          "type": "string",
+          "description": "Display name of reviewer"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Rating score from 1 to 5"
+        },
+        "comment": {
+          "type": "string",
+          "description": "Review testimonial content"
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Verified shoot client status"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Review creation timestamp"
+        }
+      },
+      "required": ["id", "rating", "comment", "verified", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and account settings"
+    },
+    "/service_packages/{packageId}": {
+      "schema": "ServicePackage",
+      "description": "Studio service packages and pricing tiers"
+    },
+    "/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Client photography session reservations"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "Client reviews and testimonials"
+    }
+  }
+}

@@ -1,0 +1,1541 @@
+/* ==========================================================================
+   SANJAY'S LIGHTWORK - CRITICAL FIX STYLESHEET
+   1. Booking & Enquiry Modal Overlay & Drawer Rules
+   2. In-App Confirmation Popup Over Page
+   3. High-Contrast Typography (#1A1A1A on #FAF8F5 Warm Cream)
+   4. Form Elements & Interaction Polish
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. QUICK GENERAL ENQUIRY MODAL (#booking-modal & #enquiry-modal)
+   -------------------------------------------------------------------------- */
+.modal-backdrop,
+.booking-modal-overlay,
+#booking-modal-overlay,
+.enquiry-modal-overlay,
+#enquiry-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.82) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 999999 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  overscroll-behavior-y: contain !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#enquiry-modal.hidden,
+.enquiry-modal-overlay.hidden,
+.booking-modal-overlay.hidden,
+#booking-modal-overlay.hidden,
+.modal-backdrop.hidden {
+  display: none !important;
+}
+
+.modal-card,
+.enquiry-drawer,
+.booking-modal-card,
+.inquiry-modal-card,
+#booking-modal,
+#enquiry-modal-card {
+  background: #F5F0E6 !important;
+  color: #1A1A1A !important;
+  width: 100% !important;
+  max-width: 520px !important;
+  height: 85vh !important;
+  max-height: 620px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: auto !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  border: 1px solid rgba(197, 160, 89, 0.45) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,0,0,0.05) !important;
+}
+
+/* Pinned Header */
+.inquiry-modal-header {
+  flex-shrink: 0 !important;
+  position: relative !important;
+  background: #F5F0E6 !important;
+  border-bottom: 1px solid #E5E0D8 !important;
+  z-index: 20 !important;
+}
+
+/* Pinned Close Button */
+.close-enquiry-modal-btn,
+#booking-modal-close-btn {
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 30 !important;
+}
+
+/* Single Scroll Body */
+.inquiry-modal-body,
+.modal-body,
+.enquiry-modal-body {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  overscroll-behavior-y: contain !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #C5A059 #F4EFE6 !important;
+  padding: 1.25rem 1.5rem !important;
+}
+
+/* Pinned Sticky Footer */
+.inquiry-modal-footer,
+.pinned-submit-container,
+.modal-footer {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  background: #F5F0E6 !important;
+  border-top: 1px solid #E5E0D8 !important;
+  z-index: 20 !important;
+}
+
+/* Visible Luxury Gold Scrollbar */
+.inquiry-modal-body::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar,
+.enquiry-modal-body::-webkit-scrollbar {
+  width: 8px !important;
+  display: block !important;
+}
+
+.inquiry-modal-body::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track,
+.enquiry-modal-body::-webkit-scrollbar-track {
+  background: #F4EFE6 !important;
+  border-radius: 8px !important;
+}
+
+.inquiry-modal-body::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb,
+.enquiry-modal-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #F9E29B 0%, #ECC56C 35%, #DCAD46 70%, #B8861B 100%) !important;
+  border-radius: 8px !important;
+  border: 1px solid #F4EFE6 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+
+.inquiry-modal-body::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover,
+.enquiry-modal-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFF0B8 0%, #EBBF5B 50%, #B8861B 100%) !important;
+}
+
+.modal-card::-webkit-scrollbar-thumb:hover,
+.enquiry-drawer::-webkit-scrollbar-thumb:hover,
+.booking-modal-card::-webkit-scrollbar-thumb:hover,
+#booking-modal::-webkit-scrollbar-thumb:hover,
+#enquiry-modal-card::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover,
+.enquiry-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #8C6207 !important;
+}
+
+/* Gold Submit & Action Buttons - Lighter Sunlit Champagne Gold with Shimmer & Elastic Physics */
+@keyframes buttonShimmerSweep {
+  0% {
+    transform: translateX(-160%) skewX(-25deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(260%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes buttonGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(245, 222, 147, 0.55), 0 8px 25px rgba(212, 175, 55, 0.38), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(255, 245, 205, 0.95), 0 12px 34px rgba(229, 197, 100, 0.65), inset 0 1px 2px #FFFFFF;
+  }
+}
+
+.gold-submit-btn,
+.btn-tactile-gold,
+#nav-book-header-btn,
+.nav-inquiry-btn {
+  position: relative !important;
+  overflow: hidden !important;
+  background: linear-gradient(135deg, #F9E29B 0%, #ECC56C 34%, #DCAD46 70%, #B8861B 100%) !important;
+  color: #12110E !important;
+  border: 1px solid #C4982E !important;
+  outline: 1px solid rgba(255, 255, 255, 0.4) !important;
+  outline-offset: -2px !important;
+  box-shadow: 0 4px 16px rgba(184, 134, 27, 0.3), 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.05em !important;
+  cursor: pointer !important;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1), 
+              background 0.25s ease, 
+              border-color 0.25s ease !important;
+  will-change: transform, box-shadow;
+}
+
+/* Shimmer Light Beam Pseudo-element */
+.gold-submit-btn::after,
+.btn-tactile-gold::after,
+#nav-book-header-btn::after,
+.nav-inquiry-btn::after,
+#popup-whatsapp-chat-btn::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 65% !important;
+  height: 200% !important;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 25%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.35) 75%,
+    rgba(255, 255, 255, 0) 100%
+  ) !important;
+  transform: translateX(-160%) skewX(-25deg) !important;
+  pointer-events: none !important;
+  z-index: 10 !important;
+}
+
+/* Hover State: Richer Sunlit Gold with Continuous Brilliant Shimmer, Defined Border & Spring Elevation */
+.gold-submit-btn:hover,
+.btn-tactile-gold:hover,
+#nav-book-header-btn:hover,
+.nav-inquiry-btn:hover {
+  background: linear-gradient(135deg, #FFF0B8 0%, #F5D37E 25%, #EBBF5B 55%, #D49F30 100%) !important;
+  border-color: #B58418 !important;
+  outline-color: rgba(255, 255, 255, 0.6) !important;
+  transform: translateY(-2.5px) scale(1.025) !important;
+  animation: buttonGlowPulse 2.2s infinite ease-in-out !important;
+}
+
+.gold-submit-btn:hover::after,
+.btn-tactile-gold:hover::after,
+#nav-book-header-btn:hover::after,
+.nav-inquiry-btn:hover::after,
+#popup-whatsapp-chat-btn:hover::after {
+  animation: buttonShimmerSweep 1.35s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+
+/* Active Press Physics */
+.gold-submit-btn:active,
+.btn-tactile-gold:active,
+#nav-book-header-btn:active,
+.nav-inquiry-btn:active {
+  transform: translateY(1px) scale(0.96) !important;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.35), inset 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. IN-APP CONFIRMATION POPUP OVER CURRENT PAGE
+   -------------------------------------------------------------------------- */
+#reservation-confirmation-overlay,
+.confirmation-popup-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 999999 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 24px 12px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#reservation-confirmation-card,
+.confirmation-popup {
+  background: #FAF8F5 !important;
+  color: #1A1A1A !important;
+  width: 100% !important;
+  max-width: 540px !important;
+  margin: auto !important;
+  border-radius: 16px !important;
+  padding: 32px 28px !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  border: 1px solid rgba(197, 160, 89, 0.5) !important;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. HIGH-CONTRAST TYPOGRAPHY (#1A1A1A on #FAF8F5 Warm Cream)
+   Force all section titles, form labels, input values, card summaries, and pricing text
+   -------------------------------------------------------------------------- */
+
+/* Section Titles */
+.theme-light h1,
+.theme-light h2,
+.theme-light h3,
+.theme-light h4,
+#booking-modal h1,
+#booking-modal h2,
+#booking-modal h3,
+#booking-modal h4,
+.confirmation-popup h1,
+.confirmation-popup h2,
+.confirmation-popup h3,
+.confirmation-popup h4,
+#direct-calendar-reservation h2,
+#direct-calendar-reservation h3,
+#pricing h2,
+#pricing h3,
+#services h2 {
+  color: #1A1A1A !important;
+  font-family: 'Cormorant Garamond', 'Cinzel', Georgia, serif;
+}
+
+/* Form Labels */
+.theme-light label,
+#booking-modal label,
+.confirmation-popup label,
+#direct-calendar-reservation label,
+.form-label {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+}
+
+/* Input Values & Textareas */
+.theme-light input:not([type="checkbox"]):not([type="radio"]),
+.theme-light textarea,
+.theme-light select,
+#booking-modal input:not([type="checkbox"]):not([type="radio"]),
+#booking-modal textarea,
+.confirmation-popup input,
+.confirmation-popup textarea,
+#direct-calendar-reservation input:not([type="checkbox"]):not([type="radio"]),
+#direct-calendar-reservation textarea {
+  color: #1A1A1A !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #D1D5DB !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  border-radius: 10px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.theme-light input:focus,
+.theme-light textarea:focus,
+#booking-modal input:focus,
+#booking-modal textarea:focus,
+#direct-calendar-reservation input:focus,
+#direct-calendar-reservation textarea:focus {
+  border-color: #8C6207 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(140, 98, 7, 0.25) !important;
+}
+
+/* Placeholder contrast */
+.theme-light input::placeholder,
+.theme-light textarea::placeholder,
+#booking-modal input::placeholder,
+#booking-modal textarea::placeholder,
+#direct-calendar-reservation input::placeholder,
+#direct-calendar-reservation textarea::placeholder {
+  color: #6B7280 !important;
+  opacity: 1 !important;
+}
+
+/* Card Summaries & Descriptions */
+.theme-light p,
+.theme-light .card-summary,
+#booking-modal p,
+.confirmation-popup p,
+#direct-calendar-reservation p,
+#pricing p,
+#services p {
+  color: #1A1A1A !important;
+}
+
+/* Pricing Text */
+.theme-light .price,
+.theme-light .pricing-val,
+.theme-light .pricing-amount,
+#pricing [class*="font-extrabold"],
+#direct-calendar-reservation [class*="font-extrabold"],
+#direct-calendar-reservation .total-investment {
+  color: #1A1A1A !important;
+  font-weight: 800 !important;
+}
+
+/* Accent Gold for Highlighted Subtitles/Labels */
+.accent-gold,
+.text-gold-accent {
+  color: #8C6207 !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. BUTTON & INTERACTIVE ELEMENTS POLISH
+   -------------------------------------------------------------------------- */
+#book-section-proceed-btn {
+  background: #1A1A1A !important;
+  color: #FFFFFF !important;
+  border: 1px solid #1A1A1A !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  transition: all 0.2s ease !important;
+}
+
+#book-section-proceed-btn:hover {
+  background: #000000 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. INQUIRY MODAL SIZE, OBVIOUS SCROLLING & PINNED FOOTER
+   - Container fixed height: height: 80vh !important; max-height: 600px !important;
+   - Modal body scrollable: overflow-y: scroll !important; with 8px visible gold scrollbar
+   - Pinned "SEND ENQUIRY" button always at bottom of card
+   -------------------------------------------------------------------------- */
+#booking-modal,
+#enquiry-modal-card,
+.booking-modal-card,
+.enquiry-drawer {
+  height: 80vh !important;
+  max-height: 600px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+/* Modal Body Scrollable with Always-Visible Gold Scrollbar */
+.modal-body,
+.enquiry-modal-body,
+#booking-modal .modal-body,
+#enquiry-modal-card .modal-body,
+.enquiry-drawer .modal-body,
+.global-modal-body {
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #C5A059 #FAF0DF !important;
+  flex: 1 1 auto !important;
+}
+
+/* Styled, visible gold scrollbar width 8px */
+.modal-body::-webkit-scrollbar,
+.enquiry-modal-body::-webkit-scrollbar,
+#booking-modal .modal-body::-webkit-scrollbar,
+#enquiry-modal-card .modal-body::-webkit-scrollbar,
+.enquiry-drawer .modal-body::-webkit-scrollbar,
+.global-modal-body::-webkit-scrollbar {
+  width: 8px !important;
+  display: block !important;
+}
+
+.modal-body::-webkit-scrollbar-track,
+.enquiry-modal-body::-webkit-scrollbar-track,
+#booking-modal .modal-body::-webkit-scrollbar-track,
+#enquiry-modal-card .modal-body::-webkit-scrollbar-track,
+.enquiry-drawer .modal-body::-webkit-scrollbar-track,
+.global-modal-body::-webkit-scrollbar-track {
+  background: #FAF0DF !important;
+  border-radius: 4px !important;
+}
+
+.modal-body::-webkit-scrollbar-thumb,
+.enquiry-modal-body::-webkit-scrollbar-thumb,
+#booking-modal .modal-body::-webkit-scrollbar-thumb,
+#enquiry-modal-card .modal-body::-webkit-scrollbar-thumb,
+.enquiry-drawer .modal-body::-webkit-scrollbar-thumb,
+.global-modal-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #F9E29B 0%, #ECC56C 35%, #DCAD46 70%, #B8861B 100%) !important;
+  border-radius: 4px !important;
+  border: 1px solid #FAF0DF !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover,
+.enquiry-modal-body::-webkit-scrollbar-thumb:hover,
+#booking-modal .modal-body::-webkit-scrollbar-thumb:hover,
+#enquiry-modal-card .modal-body::-webkit-scrollbar-thumb:hover,
+.enquiry-drawer .modal-body::-webkit-scrollbar-thumb:hover,
+.global-modal-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFF0B8 0%, #EBBF5B 50%, #B8861B 100%) !important;
+}
+
+/* Pinned Bottom Submit Button Container in Modal Card Footer */
+.pinned-submit-container,
+.modal-footer,
+#booking-modal .modal-footer,
+#enquiry-modal-card .modal-footer,
+.enquiry-drawer .modal-footer {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  background: #F5F0E6 !important;
+  border-top: 1px solid #DFD7C7 !important;
+  z-index: 25 !important;
+}
+
+#enquiry-modal-submit-btn {
+  background: linear-gradient(135deg, #F9E29B 0%, #ECC56C 34%, #DCAD46 70%, #B8861B 100%) !important;
+  color: #12110E !important;
+  border: 1px solid #C4982E !important;
+  outline: 1px solid rgba(255, 255, 255, 0.4) !important;
+  outline-offset: -2px !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.05em !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer !important;
+}
+
+#enquiry-modal-submit-btn:hover {
+  background: linear-gradient(135deg, #FFF0B8 0%, #F5D37E 25%, #EBBF5B 55%, #D49F30 100%) !important;
+  border-color: #B58418 !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* --------------------------------------------------------------------------
+   UNIVERSAL SINGLE-CLICK RELIABILITY FOR BUTTONS
+   Ensure clicking anywhere on any button (icon, text label) registers directly
+   -------------------------------------------------------------------------- */
+button,
+.btn-tactile-gold,
+.open-reserve-btn,
+.nav-inquiry-btn,
+#nav-book-header-btn,
+#hero-book-session-btn {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  touch-action: manipulation !important;
+}
+
+button > *,
+.btn-tactile-gold > *,
+.open-reserve-btn > *,
+.nav-inquiry-btn > *,
+#nav-book-header-btn > *,
+#hero-book-session-btn > *,
+.button-hover-slide,
+.book-overlay-badge,
+.gold-submit-btn::after,
+.btn-tactile-gold::after,
+#nav-book-header-btn::after,
+.nav-inquiry-btn::after,
+#popup-whatsapp-chat-btn::after {
+  pointer-events: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. CUSTOM GOLD TIME PICKER MODAL (LUXURY SCROLL / SELECT WHEEL)
+   -------------------------------------------------------------------------- */
+.clock-modal-overlay,
+#clock-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.82) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 10000002 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  animation: clockOverlayFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes clockOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.clock-modal-card,
+#clock-modal-card {
+  background: #FAF8F5 !important;
+  color: #1A1A1A !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(197, 160, 89, 0.7) !important;
+  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 160, 89, 0.3) !important;
+  max-width: 360px !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  padding-bottom: 20px !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  animation: clockCardZoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+@keyframes clockCardZoomIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#time-hour-scroll-col,
+#time-min-scroll-col {
+  scrollbar-width: thin !important;
+  scrollbar-color: #C5A059 #FAF8F5 !important;
+}
+
+#time-hour-scroll-col::-webkit-scrollbar,
+#time-min-scroll-col::-webkit-scrollbar {
+  width: 5px !important;
+}
+
+#time-hour-scroll-col::-webkit-scrollbar-track,
+#time-min-scroll-col::-webkit-scrollbar-track {
+  background: #FAF8F5 !important;
+  border-radius: 4px !important;
+}
+
+#time-hour-scroll-col::-webkit-scrollbar-thumb,
+#time-min-scroll-col::-webkit-scrollbar-thumb {
+  background: #C5A059 !important;
+  border-radius: 4px !important;
+}
+
+.time-wheel-item:hover {
+  background: #FAF6ED !important;
+  color: #8C6207 !important;
+}
+
+#gold-clock-confirm-btn {
+  background: #C5A059 !important;
+  color: #1A1A1A !important;
+  font-weight: 800 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 13px 20px !important;
+  width: 100% !important;
+  font-size: 13px !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 4px 14px rgba(197, 160, 89, 0.4) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+#gold-clock-confirm-btn:hover {
+  background: #B8860B !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(197, 160, 89, 0.5) !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. CUSTOM LUXURY GOLD DATE PICKER CALENDAR (WARM CREAM & METALLIC GOLD)
+   -------------------------------------------------------------------------- */
+.calendar-modal-overlay,
+#calendar-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.82) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 10000002 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  animation: calendarOverlayFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes calendarOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.calendar-modal-card,
+#calendar-modal-card {
+  background: #FAF8F5 !important;
+  color: #1A1A1A !important;
+  border-radius: 20px !important;
+  border: 1px solid #C5A059 !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12), 0 30px 70px -10px rgba(0, 0, 0, 0.6) !important;
+  max-width: 380px !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  padding: 24px 22px 20px 22px !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  animation: calendarCardZoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+@keyframes calendarCardZoomIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Month/Year Headers & Day Names: Serif typography ('Cormorant Garamond') */
+.calendar-header-title,
+#calendar-modal-card h3,
+#calendar-modal-card [style*="Cormorant Garamond"],
+.calendar-weekday-cell {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  color: #1A1A1A !important;
+}
+
+/* Calendar Grid Wrapper with Full Right Padding for Saturday Column */
+.calendar-grid-wrapper {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid #E5E0D8 !important;
+  border-radius: 14px !important;
+  padding: 12px 14px !important; /* Guaranteed generous right padding */
+  box-sizing: border-box !important;
+}
+
+/* Day Names Row (S, M, T, W, T, F, S) */
+.calendar-weekdays-row {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 4px !important;
+  padding: 0 4px !important;
+  margin-bottom: 8px !important;
+  text-align: center !important;
+}
+
+.calendar-weekday-cell {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #1A1A1A !important;
+  padding: 4px 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure Saturday header and column have matching alignment and no clipping */
+.calendar-weekday-cell:last-child {
+  padding-right: 0 !important;
+}
+
+/* Days Grid: 7 columns, equal distribution, no right edge clipping */
+.calendar-days-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 4px !important;
+  padding: 0 4px !important;
+  box-sizing: border-box !important;
+}
+
+/* Individual Day Button */
+.calendar-day-btn {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid transparent !important;
+  background: transparent !important;
+  color: #1A1A1A !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: auto !important;
+  cursor: pointer !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+/* Today / Hovered Date: Warm gold outline and soft gold tint (#FAF6ED) on hover */
+.calendar-day-btn:hover:not(.is-disabled):not(.is-selected) {
+  background: #FAF6ED !important;
+  border-color: #C5A059 !important;
+  color: #8C6207 !important;
+  transform: scale(1.05) !important;
+}
+
+.calendar-day-btn.is-today:not(.is-selected) {
+  border: 1.5px solid #C5A059 !important;
+  background: #FAF6ED !important;
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+}
+
+/* Selected Date Circle: Solid Metallic Gold (#C5A059) background with white text */
+.calendar-day-btn.is-selected {
+  background: #C5A059 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1.5px solid #B8860B !important;
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.45) !important;
+  transform: scale(1.08) !important;
+}
+
+/* Disabled Past Dates: Soft muted grey (#C8C2B8) STRICTLY for dates before today */
+.calendar-day-btn.is-past,
+.calendar-day-btn.is-disabled {
+  color: #C8C2B8 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  opacity: 0.50 !important;
+  text-decoration: line-through !important;
+  text-decoration-color: rgba(200, 194, 184, 0.8) !important;
+}
+
+/* Adjacent / Overflow Month Days (e.g. Oct 1, 2, 3 displayed at bottom of September):
+   NO strikethrough line styling! Clean, subtle muted opacity so clients clearly recognize next month */
+.calendar-day-btn.is-adjacent,
+.calendar-day-btn.is-overflow,
+.calendar-day-btn.is-other-month {
+  color: #A39E93 !important;
+  opacity: 0.40 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  font-weight: 500 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.calendar-day-btn.is-adjacent:hover,
+.calendar-day-btn.is-overflow:hover,
+.calendar-day-btn.is-other-month:hover {
+  opacity: 0.90 !important;
+  background: #FAF6ED !important;
+  border: 1.5px solid #C5A059 !important;
+  color: #8C6207 !important;
+  transform: scale(1.05) !important;
+  text-decoration: none !important;
+}
+
+/* When adjacent day is selected */
+.calendar-day-btn.is-adjacent.is-selected,
+.calendar-day-btn.is-overflow.is-selected,
+.calendar-day-btn.is-other-month.is-selected {
+  opacity: 1 !important;
+  background: #C5A059 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1.5px solid #B8860B !important;
+  box-shadow: 0 4px 12px rgba(197, 160, 89, 0.45) !important;
+  text-decoration: none !important;
+}
+
+/* If an adjacent date is genuinely a past date (before today), strikethrough is preserved */
+.calendar-day-btn.is-adjacent.is-past,
+.calendar-day-btn.is-adjacent.is-disabled,
+.calendar-day-btn.is-overflow.is-past,
+.calendar-day-btn.is-overflow.is-disabled {
+  color: #C8C2B8 !important;
+  opacity: 0.35 !important;
+  text-decoration: line-through !important;
+  text-decoration-color: rgba(200, 194, 184, 0.8) !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* Gold Calendar Action Button */
+#gold-calendar-confirm-btn,
+.calendar-confirm-btn {
+  background: #C5A059 !important;
+  color: #1A1A1A !important;
+  font-weight: 800 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 13px 20px !important;
+  font-size: 13px !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 4px 14px rgba(197, 160, 89, 0.4) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+#gold-calendar-confirm-btn:hover,
+.calendar-confirm-btn:hover {
+  background: #B8860B !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(197, 160, 89, 0.5) !important;
+}
+
+/* Overwrite generic browser datepicker indicator styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer !important;
+  filter: invert(65%) sepia(50%) saturate(600%) hue-rotate(5deg) brightness(90%) contrast(90%) !important;
+}
+
+/* ==========================================================================
+   ELEGANT SKELETON LOADERS & IMAGE PERFORMANCE OPTIMIZATION
+   1. Cream & Gold Shimmer Animation
+   2. Smooth 0.4s Image Fade-In
+   3. Explicit Aspect Ratio & Background Placeholders (CLS Prevention)
+   ========================================================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Elegant Warm Cream & Gold Shimmer Placeholder */
+.image-skeleton-loader,
+.skeleton-loader,
+.skeleton-placeholder,
+.skeleton-shimmer,
+.cream-gold-skeleton {
+  background: linear-gradient(90deg, #FAF8F5 25%, #FAF0DF 50%, #FAF8F5 75%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s infinite linear !important;
+  pointer-events: none !important;
+}
+
+/* Dark mode fallback for dark cards */
+.theme-dark .image-skeleton-loader,
+.dark .image-skeleton-loader,
+.theme-dark .skeleton-loader,
+.dark .skeleton-loader,
+.theme-dark .skeleton-placeholder,
+.dark .skeleton-placeholder {
+  background: linear-gradient(90deg, #1C1A17 25%, #2E2619 50%, #1C1A17 75%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s infinite linear !important;
+}
+
+/* Smooth Fade-in when image completes loading */
+.smooth-fade-img,
+.fade-in-image,
+.portfolio-image-fade,
+img.lazy-load-ready {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out !important;
+  will-change: opacity;
+}
+
+.smooth-fade-img.is-loaded,
+.fade-in-image.is-loaded,
+.portfolio-image-fade.is-loaded,
+img[data-loaded="true"] {
+  opacity: 1 !important;
+}
+
+/* ==========================================================================
+   SUBTLE SHAKE ANIMATION FOR FORM VALIDATION GUIDANCE
+   ========================================================================== */
+@keyframes subtleFormShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  15%, 45%, 75% {
+    transform: translateX(-6px);
+  }
+  30%, 60%, 85% {
+    transform: translateX(6px);
+  }
+  92% {
+    transform: translateX(-2px);
+  }
+}
+
+.shake-error,
+.form-shake-error,
+.shake-animation {
+  animation: subtleFormShake 0.48s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+}
+
+.input-error-highlight {
+  border-color: #E11D48 !important;
+  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.22) !important;
+}
+
+/* Containers with explicit aspect ratio & background placeholder to prevent layout shifts */
+.image-card-container,
+.portfolio-img-container,
+.gallery-card-container,
+.aspect-container-card {
+  position: relative;
+  overflow: hidden;
+  background-color: #FAF8F5;
+  aspect-ratio: 4 / 5;
+  box-sizing: border-box;
+}
+
+.aspect-container-card.aspect-portrait,
+.gallery-aspect-portrait {
+  aspect-ratio: 4 / 5 !important;
+}
+
+.aspect-container-card.aspect-landscape,
+.gallery-aspect-landscape {
+  aspect-ratio: 16 / 10 !important;
+}
+
+.aspect-container-card.aspect-square,
+.gallery-aspect-square {
+  aspect-ratio: 1 / 1 !important;
+}
+
+.aspect-container-card.aspect-tall,
+.gallery-aspect-tall {
+  aspect-ratio: 9 / 16 !important;
+}
+
+/* ==========================================================================
+   DESKTOP TYPOGRAPHY & SPACING ENHANCEMENTS (>= 1024px)
+   ========================================================================== */
+@media (min-width: 1024px) {
+  /* 1. Hero Main Headline */
+  #home h1,
+  .hero-headline,
+  .hero-main-title {
+    font-size: 4rem !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.5px !important;
+  }
+
+  /* 2. Standardized Section Padding: 96px 0 */
+  section[data-section="about"],
+  section[data-section="services"],
+  section[data-section="pricing"],
+  section[data-section="book"],
+  #about,
+  #services,
+  #pricing,
+  #direct-calendar-reservation {
+    padding-top: 96px !important;
+    padding-bottom: 96px !important;
+  }
+
+  /* 3. Card Interior Padding: 32px 36px */
+  .standard-desktop-card,
+  #reservation-form .lg\:col-span-7,
+  #reservation-form .lg\:col-span-5,
+  .pricing-card,
+  .service-card-desktop {
+    padding: 32px 36px !important;
+  }
+
+  /* 4. Soften Harsh Bold Weights on Body Copy and Labels */
+  .softened-label,
+  section label,
+  section .section-label,
+  section .sub-label {
+    font-weight: 500 !important;
+    letter-spacing: 1.5px !important;
+    color: #2C2825 !important;
+  }
+
+  section p,
+  .section-body-text {
+    font-weight: 400 !important;
+    color: #2C2825;
+  }
+}
+
+/* ==========================================================================
+   MOBILE-ONLY UX OVERHAUL (STRICTLY @media (max-width: 768px))
+   DO NOT ALTER LAPTOP / DESKTOP STYLES (>= 769px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* ------------------------------------------------------------------------
+     1. MOBILE HEADER DE-CLUTTERING & THUMB-ZONE NAVIGATION
+     - Hide top-right social icons, theme toggle, and top-right gold "INQUIRY" button.
+     - Keep ONLY the clean "SANJAY'S" logo on the top-left header.
+     - Adjust header padding and layout.
+     ------------------------------------------------------------------------ */
+  #main-nav-header #nav-book-header-btn,
+  #main-nav-header .nav-inquiry-btn,
+  #main-nav-header .open-enquiry-btn,
+  #main-nav-header a[href*="wa.me"],
+  #main-nav-header a[title*="WhatsApp"],
+  #main-nav-header a[href*="instagram.com"],
+  #main-nav-header a[title*="Instagram"] {
+    display: none !important;
+  }
+
+  /* Move floating contact badge up to avoid colliding with fixed bottom thumb bar */
+  #floating-contact-badge {
+    bottom: 74px !important;
+    right: 16px !important;
+    z-index: 998 !important;
+    transform: scale(0.9) !important;
+    transform-origin: bottom right !important;
+  }
+
+  /* Automatically hide the [✦ CONTACT] widget ONLY when an active modal/drawer is opened */
+  body:has(#booking-modal-overlay:not(.hidden):not([style*="display: none"]):not([style*="display:none"])) #floating-contact-badge,
+  body:has(#enquiry-modal:not(.hidden):not([style*="display: none"]):not([style*="display:none"])) #floating-contact-badge,
+  body:has(#reservation-confirmation-overlay:not(.hidden):not([style*="display: none"]):not([style*="display:none"])) #floating-contact-badge,
+  body:has(#clock-modal-overlay:not(.hidden):not([style*="display: none"]):not([style*="display:none"])) #floating-contact-badge {
+    display: none !important;
+  }
+
+  /* Footer bottom padding for thumb bar clearance */
+  footer {
+    padding-bottom: 84px !important;
+  }
+
+  /* Fixed bottom thumb-zone bar */
+  #mobile-bottom-bar,
+  .mobile-bottom-bar {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    z-index: 99990 !important;
+  }
+
+  /* ------------------------------------------------------------------------
+     1. COMPACT COLOR PROCESS / WORK PROCESS ACCORDION (<768px)
+     - On .work-process-drawer / .color-science-container when expanded:
+       * Reduce padding to 16px 20px
+       * Set swatch circles to width: 28px; height: 28px;
+       * Display color swatches in a compact horizontal flex row or 2-column grid
+         to limit total expanded height to ~260px.
+     ------------------------------------------------------------------------ */
+  .work-process-drawer,
+  .color-science-container {
+    padding: 16px 20px !important;
+    max-height: 260px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .work-process-drawer .grid-cols-2,
+  .color-science-container .grid-cols-2,
+  .work-process-drawer .grid,
+  .color-science-container .grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .work-process-drawer .w-9.h-9,
+  .color-science-container .w-9.h-9,
+  .work-process-drawer [style*="backgroundColor"],
+  .color-science-container [style*="backgroundColor"] {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 6px !important;
+  }
+
+  .work-process-drawer button,
+  .color-science-container button {
+    padding: 6px 8px !important;
+    gap: 6px !important;
+  }
+
+  .work-process-drawer p,
+  .color-science-container p {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* ------------------------------------------------------------------------
+     2. COMPACT CAROUSEL CARD DIMENSIONS (<768px)
+     - For all mobile carousel cards (Portfolio, Core Services, and Pricing):
+       * Set card internal padding to 16px
+       * Limit hero/portfolio image container max-height to 260px (object-fit: cover)
+       * Tighten vertical gap between title, badge, and text copy
+     ------------------------------------------------------------------------ */
+  /* Portfolio Card Image Container */
+  .portfolio-suite-frame,
+  .portfolio-hero-img-box,
+  .portfolio-card-img-container,
+  #portfolio-slider .aspect-\[3\/4\],
+  #portfolio-slider .aspect-\[4\/5\],
+  #portfolio-slider img.object-cover {
+    max-height: 260px !important;
+    object-fit: cover !important;
+  }
+
+  /* Services & Pricing Cards Internal Padding & Gaps */
+  .pricing-card,
+  .services-carousel-card,
+  #pricing-packages-carousel .pricing-card,
+  .pricing-packages-container .pricing-card,
+  .standard-desktop-card {
+    padding: 16px !important;
+  }
+
+  .pricing-card .space-y-6,
+  .services-carousel-card .space-y-4 {
+    margin-top: 0 !important;
+  }
+
+  .pricing-card h3,
+  .services-carousel-card h3 {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    font-size: 1.15rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .pricing-card p,
+  .services-carousel-card p {
+    margin-top: 4px !important;
+    font-size: 11.5px !important;
+    line-height: 1.4 !important;
+  }
+
+  .pricing-card .space-y-2\.5,
+  .pricing-card .space-y-2 {
+    gap: 4px !important;
+  }
+
+  .pricing-card .mt-6,
+  .services-carousel-card .mt-6 {
+    margin-top: 10px !important;
+    padding-top: 10px !important;
+  }
+
+  /* ------------------------------------------------------------------------
+     2. HORIZONTAL PRICING CAROUSEL (MOBILE ONLY)
+     - Transform Section B from vertical scroll list into an elegant horizontal swipe carousel
+     - Container: display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; padding: 0 16px 20px; -webkit-overflow-scrolling: touch;
+     - Cards: flex: 0 0 85%; scroll-snap-align: center; box-sizing: border-box;
+     ------------------------------------------------------------------------ */
+  #pricing-packages-carousel,
+  .pricing-packages-container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 16px !important;
+    padding: 0 16px 20px 16px !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important;  /* IE and Edge */
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    width: calc(100% + 32px) !important;
+  }
+
+  #pricing-packages-carousel::-webkit-scrollbar,
+  .pricing-packages-container::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  #pricing-packages-carousel .pricing-card,
+  .pricing-packages-container .pricing-card,
+  #pricing-packages-carousel > div,
+  .pricing-packages-container > div {
+    flex: 0 0 85% !important;
+    max-width: 85% !important;
+    scroll-snap-align: center !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+
+  .pricing-mobile-dots {
+    display: flex !important;
+  }
+
+  /* ------------------------------------------------------------------------
+     3. MOBILE ENQUIRY BOTTOM DRAWER (MOBILE ONLY)
+     - Display the enquiry modal as a native bottom sheet/drawer:
+       position: fixed; bottom: 0; left: 0; right: 0; max-height: 90vh; border-radius: 20px 20px 0 0;
+     - Enable smooth touch/finger vertical scrolling inside the form (overflow-y: auto; touch-action: pan-y;)
+     - Pin the "SEND ENQUIRY" submit button to the bottom footer of the drawer.
+     ------------------------------------------------------------------------ */
+  #booking-modal-overlay,
+  .booking-modal-overlay,
+  #enquiry-modal,
+  .enquiry-modal-overlay {
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+  }
+
+  #booking-modal,
+  #enquiry-modal-card,
+  .inquiry-modal-card,
+  .booking-modal-card,
+  .enquiry-drawer {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.45) !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    animation: mobileDrawerSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  @keyframes mobileDrawerSlideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  /* Smooth touch/finger vertical scrolling inside form */
+  #booking-modal .modal-body,
+  #booking-modal .inquiry-modal-body,
+  #booking-modal .enquiry-modal-body,
+  #enquiry-modal-card .modal-body,
+  #enquiry-modal-card .inquiry-modal-body,
+  #enquiry-modal-card .enquiry-modal-body,
+  .inquiry-modal-body,
+  .enquiry-modal-body {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-y: contain !important;
+    overscroll-behavior: contain !important;
+    max-height: calc(90vh - 150px) !important;
+    padding-bottom: 24px !important;
+  }
+
+  /* Pinned bottom footer submit button in drawer */
+  #booking-modal .modal-footer,
+  #booking-modal .inquiry-modal-footer,
+  #booking-modal .pinned-submit-container,
+  #enquiry-modal-card .modal-footer,
+  #enquiry-modal-card .inquiry-modal-footer,
+  #enquiry-modal-card .pinned-submit-container,
+  .inquiry-modal-footer,
+  .pinned-submit-container {
+    position: sticky !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    flex-shrink: 0 !important;
+    background: #F5F0E6 !important;
+    border-top: 1px solid #DFD7C7 !important;
+    z-index: 30 !important;
+    padding: 12px 16px max(14px, env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Drag handle affordance indicator at top of mobile bottom drawer */
+  #booking-modal::before,
+  #enquiry-modal-card::before,
+  #admin-auth-modal-card::before {
+    content: '' !important;
+    display: block !important;
+    width: 36px !important;
+    height: 4px !important;
+    border-radius: 999px !important;
+    background: #C4B9A5 !important;
+    margin: 8px auto 2px auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Google Authenticator / 2FA Mobile Bottom Drawer Styles */
+  #admin-auth-modal-overlay,
+  .admin-auth-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    z-index: 1000000 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  #admin-auth-modal-card,
+  .admin-auth-modal-card {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    max-height: 92vh !important;
+    border-radius: 24px 24px 0 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.6) !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    animation: mobileDrawerSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 1000001 !important;
+  }
+
+  #admin-auth-scroll-area,
+  .admin-auth-scroll-area {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-y: contain !important;
+    overscroll-behavior: contain !important;
+    max-height: calc(92vh - 72px) !important;
+    padding-bottom: max(36px, calc(16px + env(safe-area-inset-bottom))) !important;
+  }
+}
+
+/* ==========================================================================
+   GOOGLE AUTHENTICATOR / 2FA MODAL ENFORCED FLEX & SCROLL ARCHITECTURE
+   Guarantees input fields and QR code container use flex-shrink: 0 and are
+   contained within a touch-scrollable area honoring safe-area-inset-bottom.
+   ========================================================================== */
+#admin-auth-modal-overlay,
+.admin-auth-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 1000000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+#admin-auth-modal-card,
+.admin-auth-modal-card {
+  width: 100% !important;
+  max-width: 480px !important;
+  max-height: 92vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border-radius: 20px !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 25px 65px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.25) !important;
+}
+
+.admin-auth-header {
+  flex-shrink: 0 !important;
+}
+
+#admin-auth-scroll-area,
+.admin-auth-scroll-area {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  overscroll-behavior-y: contain !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #C5A059 rgba(255, 255, 255, 0.08) !important;
+  padding-bottom: max(36px, calc(16px + env(safe-area-inset-bottom))) !important;
+}
+
+#admin-auth-scroll-area::-webkit-scrollbar,
+.admin-auth-scroll-area::-webkit-scrollbar {
+  width: 6px !important;
+  display: block !important;
+}
+
+#admin-auth-scroll-area::-webkit-scrollbar-track,
+.admin-auth-scroll-area::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 6px !important;
+}
+
+#admin-auth-scroll-area::-webkit-scrollbar-thumb,
+.admin-auth-scroll-area::-webkit-scrollbar-thumb {
+  background: #C5A059 !important;
+  border-radius: 6px !important;
+}
+
+/* Strict flex-shrink: 0 enforcement across all interactive authentication controls */
+.totp-tabs-container,
+.totp-input-container,
+.totp-input-wrapper,
+.totp-input-wrapper > div,
+.passcode-input-container,
+.passcode-input-container input,
+.totp-input-container input,
+.admin-auth-action-btn,
+.totp-qr-container,
+.admin-auth-qr-container,
+.totp-qr-drawer,
+.totp-qr-image-wrapper,
+.totp-qr-box,
+.totp-qr-image-wrapper img,
+.totp-manual-key-block,
+.totp-instructions,
+.admin-auth-footer {
+  flex-shrink: 0 !important;
+}
+
+
+

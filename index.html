@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <title>Sanjay's Lightworks – Natural Light Photography &amp; Cinematography Ontario</title>
+    <meta name="description" content="Authentic, unposed photography capturing natural light portraits, traditional ceremonies, couples, and creative sessions across Ontario, Canada." />
+    
+    <!-- OpenGraph Social Cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sanjay's Lightworks" />
+    <meta property="og:title" content="Sanjay's Lightworks – Natural Light Photography &amp; Cinematography" />
+    <meta property="og:description" content="Discover authentic candid photography and timeless visual storytelling by Sanjay in Ontario. Transparent pricing and instant calendar booking." />
+    <meta property="og:image" content="/images/golden-grace-2.jpg" />
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sanjay's Lightworks – Natural Light Photography &amp; Cinematography" />
+    <meta name="twitter:description" content="Authentic, unposed photography capturing natural light portraits, traditional ceremonies, couples, and creative sessions across Ontario, Canada." />
+    <meta name="twitter:image" content="/images/golden-grace-2.jpg" />
+    
+    <!-- Sitemap XML Link -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+    
+    <!-- Schema.org JSON-LD Structured Data for Local Business & Photography Studio -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PhotographyBusiness",
+      "name": "Sanjay's Lightworks",
+      "image": "/images/golden-grace-2.jpg",
+      "description": "Visual storytelling and authentic natural light photography studio in Ontario, Canada specializing in portraits, couples, traditional ceremonies, and editorial sessions.",
+      "telephone": "+1-905-588-2047",
+      "email": "nsanjayb@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Ontario",
+        "addressCountry": "CA"
+      },
+      "priceRange": "$50 - $150 CAD",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "08:00",
+        "closes": "21:00"
+      }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+    <!-- High-Priority Image Preloading for Hero & Top Carousel -->
+    <link rel="preload" as="image" href="/images/golden-grace-2.jpg" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/golden-grace-1.jpg" />
+    <link rel="preload" as="image" href="/images/golden-grace-3.jpg" />
+    <link rel="preload" as="image" href="/images/portrait.png" />
+    <style>
+      /* Cream & Gold Shimmer Skeleton Loader */
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+
+      .skeleton-shimmer,
+      .image-skeleton-loader,
+      .skeleton-placeholder {
+        background: linear-gradient(90deg, #F5F0E6 25%, #EBE2D0 50%, #F5F0E6 75%) !important;
+        background-size: 200% 100% !important;
+        animation: shimmer 1.5s infinite linear !important;
+      }
+
+      /* Dark mode skeleton shimmer fallback */
+      .theme-dark .skeleton-shimmer,
+      .dark .skeleton-shimmer,
+      .theme-dark .image-skeleton-loader,
+      .dark .image-skeleton-loader {
+        background: linear-gradient(90deg, #1C1A17 25%, #2E2619 50%, #1C1A17 75%) !important;
+        background-size: 200% 100% !important;
+        animation: shimmer 1.5s infinite linear !important;
+      }
+
+      /* Smooth 0.4s Fade-in on image complete */
+      .fade-in-image,
+      .smooth-fade-img,
+      .portfolio-image-fade {
+        opacity: 0;
+        transition: opacity 0.4s ease-in-out !important;
+      }
+
+      .fade-in-image.is-loaded,
+      .smooth-fade-img.is-loaded,
+      .portfolio-image-fade.is-loaded,
+      img[data-loaded="true"] {
+        opacity: 1 !important;
+      }
+
+      /* Image container cards with explicit aspect ratio & placeholder to eliminate CLS */
+      .image-card-container,
+      .portfolio-img-container,
+      .gallery-card-container {
+        position: relative;
+        overflow: hidden;
+        background-color: #FAF8F5;
+        aspect-ratio: 4 / 5;
+      }
+
+      /* Focus Ring Styles for Enhanced Keyboard Navigation Accessibility */
+      :focus-visible {
+        outline: 2px solid #D4AF37 !important;
+        outline-offset: 2px !important;
+      }
+
+      .theme-light :focus-visible {
+        outline: 2px solid #8C6207 !important;
+        outline-offset: 2px !important;
+      }
+
+      /* Luxury Date Picker - Adjacent/Overflow Month & Past Day Rules */
+      .calendar-day-btn.is-adjacent,
+      .calendar-day-btn.is-overflow,
+      .calendar-day-btn.is-other-month {
+        text-decoration: none !important;
+        opacity: 0.40 !important;
+        color: #A39E93 !important;
+        cursor: pointer !important;
+        pointer-events: auto !important;
+      }
+      .calendar-day-btn.is-adjacent:hover,
+      .calendar-day-btn.is-overflow:hover,
+      .calendar-day-btn.is-other-month:hover {
+        opacity: 0.90 !important;
+        background: #FAF6ED !important;
+        border-color: #C5A059 !important;
+        color: #8C6207 !important;
+      }
+      .calendar-day-btn.is-past,
+      .calendar-day-btn.is-disabled {
+        text-decoration: line-through !important;
+        color: #C8C2B8 !important;
+        cursor: not-allowed !important;
+        pointer-events: none !important;
+        opacity: 0.50 !important;
+      }
+    </style>
+  </head>
+  <body class="bg-[#08080A] text-[#ffffff] antialiased selection:bg-[#D4AF37] selection:text-black min-h-screen overflow-x-hidden">
+    <div id="root"></div>
+
+    <!-- Direct Reservation Section Anchor Target -->
+    <div id="reservation-section" class="sr-only -top-24 relative pointer-events-none"></div>
+
+    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

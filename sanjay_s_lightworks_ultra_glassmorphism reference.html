@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>Sanjay's Lightworks – Natural Light Photography &amp; Cinematography Ontario</title>
+  <meta name="description" content="Authentic, unposed photography capturing natural light portraits, traditional ceremonies, couples, and creative sessions across Ontario, Canada." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       RESET & BASE DESIGN SYSTEM
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --font-cinzel: 'Cinzel', serif;
+      --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --color-gold: #D4AF37;
+      --color-gold-deep: #8C6207;
+      --color-gold-light: #F3E5AB;
+      --color-bg-light: #F4F1EA;
+      --color-bg-dark: #08080A;
+      
+      /* Active Glass Physics Shaders */
+      --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.78) 0%, rgba(245, 241, 234, 0.45) 100%);
+      --glass-border: rgba(255, 255, 255, 0.85);
+      --glass-shadow: 0 25px 50px -12px rgba(26, 26, 26, 0.08), 0 1px 0px 1px rgba(255, 255, 255, 0.95) inset;
+      --glass-blur: blur(28px) saturate(210%);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-bg-light);
+      color: #1A1A1A;
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+
+    body.dark-mode {
+      background-color: var(--color-bg-dark);
+      color: #FAF8F5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    /* ==========================================================================
+       GLASSMORPHISM SHADERS & THEMES
+       ========================================================================== */
+    .glass-card {
+      position: relative;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: 24px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* 1. Frosted Crystal Theme */
+    body[data-glass-style="crystal"] .glass-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(245, 241, 234, 0.45) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      box-shadow: 0 25px 50px -12px rgba(26, 26, 26, 0.08), 0 1px 0 1px rgba(255, 255, 255, 0.95) inset;
+      color: #14110B;
+    }
+    body.dark-mode[data-glass-style="crystal"] .glass-card {
+      background: linear-gradient(135deg, rgba(30, 28, 26, 0.88) 0%, rgba(18, 16, 14, 0.78) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 1px 0 1px rgba(255, 255, 255, 0.15) inset;
+      color: #FAF6EE;
+    }
+
+    /* 2. Liquid Gold Glass Theme (Refined High Contrast) */
+    body[data-glass-style="gold"] .glass-card {
+      background: linear-gradient(135deg, rgba(255, 248, 220, 0.85) 0%, rgba(230, 195, 110, 0.52) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.75);
+      box-shadow: 0 30px 60px -15px rgba(184, 144, 40, 0.28), 0 1px 0 1px rgba(255, 255, 255, 0.95) inset;
+      color: #14110B !important;
+    }
+    body[data-glass-style="gold"] .glass-card h1,
+    body[data-glass-style="gold"] .glass-card h2,
+    body[data-glass-style="gold"] .glass-card h3,
+    body[data-glass-style="gold"] .glass-card h4,
+    body[data-glass-style="gold"] .glass-card strong {
+      color: #14110B !important;
+    }
+    body[data-glass-style="gold"] .glass-card p,
+    body[data-glass-style="gold"] .glass-card span {
+      color: #2D2517;
+    }
+    body[data-glass-style="gold"] .glass-card .addon-price {
+      color: #593E03 !important;
+      font-weight: 800 !important;
+      text-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.8);
+    }
+    body[data-glass-style="gold"] .glass-card .form-heading-badge {
+      background: rgba(20, 17, 11, 0.08) !important;
+      border: 1px solid rgba(20, 17, 11, 0.15) !important;
+      color: #14110B !important;
+    }
+    body.dark-mode[data-glass-style="gold"] .glass-card {
+      background: linear-gradient(135deg, rgba(45, 36, 15, 0.94) 0%, rgba(25, 20, 10, 0.92) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.65);
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.75), 0 1px 0 1px rgba(255, 235, 160, 0.4) inset;
+      color: #FAF6EE !important;
+    }
+    body.dark-mode[data-glass-style="gold"] .glass-card h1,
+    body.dark-mode[data-glass-style="gold"] .glass-card h2,
+    body.dark-mode[data-glass-style="gold"] .glass-card h3,
+    body.dark-mode[data-glass-style="gold"] .glass-card h4 {
+      color: #FFFFFF !important;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    }
+    body.dark-mode[data-glass-style="gold"] .glass-card .addon-price {
+      color: #F8E29E !important;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    }
+    body.dark-mode[data-glass-style="gold"] .glass-card .form-heading-badge {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 1px solid rgba(212, 175, 55, 0.4) !important;
+      color: #FAF8F5 !important;
+    }
+
+    /* 3. Obsidian Glass Theme */
+    body[data-glass-style="obsidian"] .glass-card {
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.92) 0%, rgba(12, 12, 12, 0.96) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.55), 0 1px 0 1px rgba(255, 255, 255, 0.25) inset;
+      color: #FFFFFF;
+    }
+    body.dark-mode[data-glass-style="obsidian"] .glass-card {
+      background: linear-gradient(135deg, rgba(20, 20, 22, 0.95) 0%, rgba(8, 8, 10, 0.98) 100%);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      color: #FFFFFF;
+    }
+
+    /* ==========================================================================
+       TACTILE GLASS BUTTONS
+       ========================================================================== */
+    .btn-gold-primary {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.95) 0%, rgba(184, 144, 40, 0.85) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 245, 200, 0.85);
+      box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.4), 0 1px 0 1px rgba(255, 255, 255, 0.9) inset;
+      color: #FFFFFF !important;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      transition: all 0.25s ease;
+    }
+    .btn-gold-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -5px rgba(212, 175, 55, 0.55);
+    }
+
+    .btn-glass-secondary {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 235, 222, 0.55) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 10px 25px -5px rgba(26, 26, 26, 0.08), 0 1px 0 1px rgba(255, 255, 255, 0.95) inset;
+      color: #1A1A1A;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      transition: all 0.25s ease;
+    }
+    body.dark-mode .btn-glass-secondary {
+      background: linear-gradient(135deg, rgba(30, 28, 26, 0.85) 0%, rgba(18, 16, 14, 0.75) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+    }
+    .btn-glass-secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION (ISSUE 5 FIX: RESPONSIVENESS & PADDING)
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(244, 241, 234, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 220, 206, 0.8);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    body.dark-mode .site-header {
+      background: rgba(8, 8, 10, 0.88);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    @media (min-width: 640px) {
+      .header-inner {
+        padding: 0 28px;
+        gap: 24px;
+      }
+    }
+    @media (min-width: 1024px) {
+      .header-inner {
+        padding: 0 36px;
+      }
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .brand-camera-icon {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #D4AF37;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #12100D;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+    body.dark-mode .brand-camera-icon {
+      background: #000000;
+      border-color: #D4AF37;
+    }
+    .brand-camera-icon svg {
+      stroke: #F3E5AB !important;
+    }
+    .brand-camera-ping {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      background: #D4AF37;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #D4AF37;
+    }
+    .brand-text-name {
+      font-family: var(--font-cinzel);
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      line-height: 1;
+      color: #0D0B08;
+    }
+    body.dark-mode .brand-text-name {
+      color: #FFFFFF;
+    }
+    .brand-text-sub {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.35em;
+      color: #8C6207;
+      margin-top: 3px;
+    }
+    body.dark-mode .brand-text-sub {
+      color: #D4AF37;
+    }
+
+    /* Nav links container - Media query scaling to prevent button collision */
+    .header-nav {
+      display: none;
+      align-items: center;
+      gap: 20px;
+      flex-shrink: 1;
+    }
+    @media (min-width: 1024px) {
+      .header-nav {
+        display: flex;
+        gap: 28px;
+      }
+    }
+    @media (min-width: 1200px) {
+      .header-nav {
+        gap: 36px;
+      }
+    }
+    .header-nav a {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #5A544B;
+      transition: color 0.2s ease;
+      white-space: nowrap;
+    }
+    body.dark-mode .header-nav a {
+      color: #C8C2B8;
+    }
+    .header-nav a:hover {
+      color: #B89028;
+    }
+    body.dark-mode .header-nav a:hover {
+      color: #D4AF37;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .icon-utility-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid rgba(226, 220, 206, 0.8);
+      background: rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8C8275;
+      transition: all 0.2s ease;
+    }
+    body.dark-mode .icon-utility-btn {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      color: #D4AF37;
+    }
+
+    /* ==========================================================================
+       SECTION DIVIDERS (EDITORIAL LUXURY HAIRLINE WITH DIAMOND)
+       ========================================================================== */
+    .section-divider {
+      position: relative;
+      width: 100%;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+      pointer-events: none;
+    }
+    .section-divider-line {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(184, 144, 40, 0.35) 50%, transparent 100%);
+    }
+    .section-divider-emblem {
+      position: relative;
+      background: var(--color-bg-light);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    body.dark-mode .section-divider-emblem {
+      background: var(--color-bg-dark);
+    }
+    .divider-diamond {
+      width: 7px;
+      height: 7px;
+      background: #D4AF37;
+      transform: rotate(45deg);
+    }
+
+    /* ==========================================================================
+       GALLERY ARCHIVE (ISSUE 4 FIX: UNIFORM ASPECT-3/4 & FALLBACK)
+       ========================================================================== */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .gallery-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(226, 220, 206, 0.8);
+      background: #1C1916;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
+    }
+    body.dark-mode .gallery-card {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .gallery-card:hover {
+      transform: translateY(-4px);
+      border-color: #D4AF37;
+    }
+    .gallery-img-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4; /* STRICT UNIFORM ASPECT RATIO ENFORCEMENT */
+      overflow: hidden;
+      background: #1C1916;
+    }
+    .gallery-img-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .gallery-card:hover .gallery-img-frame img {
+      transform: scale(1.05);
+    }
+
+    /* Golden Dust Shimmer Loader */
+    @keyframes goldShimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .golden-shimmer-placeholder {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, #1C1916 0%, rgba(212, 175, 55, 0.22) 50%, #1C1916 100%);
+      background-size: 200% 100%;
+      animation: goldShimmer 1.8s infinite linear;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       TIME PICKER MODAL (ISSUE 3 FIX: UN-STACKED, SPACIOUS TOUCH TARGETS)
+       ========================================================================== */
+    .time-picker-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .time-picker-modal-overlay.active {
+      display: flex;
+    }
+    .time-picker-dialog {
+      max-width: 440px;
+      width: 100%;
+      background: #FAF8F5;
+      color: #1A1A1A;
+      border-radius: 28px;
+      border: 1px solid rgba(212, 175, 55, 0.65);
+      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.5);
+      padding: 24px 22px;
+      position: relative;
+    }
+    body.dark-mode .time-picker-dialog {
+      background: #141210;
+      color: #FAF8F5;
+      border-color: rgba(212, 175, 55, 0.45);
+    }
+    .time-close-x {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: inherit;
+    }
+    body.dark-mode .time-close-x {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Live Preview & AM/PM Block */
+    .time-live-preview-box {
+      background: #FFFFFF;
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-radius: 18px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    body.dark-mode .time-live-preview-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+    .time-big-digits {
+      font-family: var(--font-cinzel);
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .time-ampm-switcher {
+      display: flex;
+      background: #ECE7DC;
+      border-radius: 12px;
+      padding: 3px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    body.dark-mode .time-ampm-switcher {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .time-ampm-btn {
+      padding: 6px 14px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #6B6150;
+      transition: all 0.2s ease;
+    }
+    .time-ampm-btn.active {
+      background: #14110B;
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    body.dark-mode .time-ampm-btn.active {
+      background: #FAF8F5;
+      color: #14110B;
+    }
+
+    /* Quick Adjustment Bar */
+    .quick-adj-container {
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+    }
+    body.dark-mode .quick-adj-container {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .quick-adj-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #8C6207;
+      display: block;
+      margin-bottom: 6px;
+    }
+    body.dark-mode .quick-adj-label {
+      color: #D4AF37;
+    }
+    .quick-adj-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .quick-adj-btn {
+      min-height: 38px;
+      background: #FFFFFF;
+      border: 1px solid #D5CDBD;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #14110B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    body.dark-mode .quick-adj-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #FAF8F5;
+    }
+    .quick-adj-btn:hover {
+      background: #F4F1EA;
+      transform: translateY(-1px);
+    }
+
+    /* Dual Wheel Scroll Columns - Height 250px with Min 42px touch buttons */
+    .time-columns-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: #FFFFFF;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 18px;
+      padding: 14px 10px;
+      margin-bottom: 18px;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    body.dark-mode .time-columns-wrapper {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+    .time-column-header {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #8C6207;
+      text-align: center;
+      padding-bottom: 8px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #ECE7DC;
+    }
+    body.dark-mode .time-column-header {
+      color: #D4AF37;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .time-scroll-list {
+      height: 240px;
+      overflow-y: auto;
+      padding-right: 4px;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #D4AF37 transparent;
+    }
+    .time-touch-item {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 4px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      color: #2D2517;
+      transition: all 0.15s ease;
+    }
+    body.dark-mode .time-touch-item {
+      color: #C8C2B8;
+    }
+    .time-touch-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .time-touch-item.selected {
+      background: #14110B;
+      color: #FFFFFF;
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    body.dark-mode .time-touch-item.selected {
+      background: #FAF8F5;
+      color: #14110B;
+    }
+
+    /* ==========================================================================
+       FLOATING HUD & CONTACT BUTTON (ISSUE 1 FIX: NON-OVERLAPPING OPPOSITE SIDES)
+       ========================================================================== */
+    /* Floating Glass Physics HUD - Positioned cleanly on bottom-left */
+    #floating-glass-hud {
+      position: fixed;
+      bottom: 24px;
+      left: 20px;
+      z-index: 90;
+      pointer-events: auto;
+    }
+    @media (min-width: 640px) {
+      #floating-glass-hud {
+        left: 28px;
+        bottom: 28px;
+      }
+    }
+    .hud-pill-wrap {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15);
+    }
+    body.dark-mode .hud-pill-wrap {
+      background: rgba(22, 22, 26, 0.88);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .hud-title-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #8C6207;
+      padding: 0 4px;
+      display: none;
+    }
+    @media (min-width: 640px) {
+      .hud-title-label {
+        display: inline-block;
+      }
+    }
+    body.dark-mode .hud-title-label {
+      color: #D4AF37;
+    }
+    .hud-theme-btn {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #5A544B;
+      transition: all 0.2s ease;
+    }
+    body.dark-mode .hud-theme-btn {
+      color: #A39B8E;
+    }
+    .hud-theme-btn.active {
+      background: #14110B;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    body.dark-mode .hud-theme-btn.active {
+      background: #FAF8F5;
+      color: #14110B;
+    }
+
+    /* Floating "+ Contact" Button - Positioned cleanly on bottom-right */
+    #floating-contact-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      z-index: 90;
+      pointer-events: auto;
+    }
+    @media (min-width: 640px) {
+      #floating-contact-widget {
+        right: 28px;
+        bottom: 28px;
+      }
+    }
+    .contact-trigger-pill {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(184, 134, 11, 0.4);
+      border-radius: 9999px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15);
+      color: #1A1A1A;
+      transition: all 0.25s ease;
+    }
+    body.dark-mode .contact-trigger-pill {
+      background: rgba(22, 22, 27, 0.95);
+      border-color: rgba(212, 175, 55, 0.4);
+      color: #FAF8F5;
+    }
+    .contact-trigger-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #25D366;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #25D366;
+    }
+
+    /* Contact Drawer Popup */
+    .contact-flyout-drawer {
+      position: absolute;
+      bottom: 56px;
+      right: 0;
+      width: 250px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    body.dark-mode .contact-flyout-drawer {
+      background: rgba(20, 20, 24, 0.96);
+      border-color: rgba(212, 175, 55, 0.35);
+    }
+    .contact-flyout-drawer.open {
+      display: flex;
+    }
+    .contact-item-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.03);
+      font-size: 11px;
+      font-weight: 700;
+      color: inherit;
+      transition: background 0.15s ease;
+    }
+    body.dark-mode .contact-item-row {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .contact-item-row:hover {
+      background: rgba(212, 175, 55, 0.15);
+    }
+
+    /* ==========================================================================
+       FOOTER (ISSUE 1 FIX: GENEROUS PB-36 SO NO OCCLUSION OF STUDIO ACCESS)
+       ========================================================================== */
+    .site-footer {
+      background: #1A1A1A;
+      color: #FAF8F5;
+      border-top: 1px solid #000000;
+      padding-top: 60px;
+      padding-bottom: 140px; /* AMPLE CLEARANCE: Never occluded by bottom floating HUDs */
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+    .footer-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .footer-address {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: #A39B8E;
+    }
+    .footer-bottom-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 10px;
+      color: #6B6357;
+    }
+    .studio-access-btn {
+      color: #3D3A36;
+      font-weight: 700;
+      transition: color 0.2s ease;
+      cursor: pointer;
+    }
+    .studio-access-btn:hover {
+      color: #D4AF37;
+    }
+  </style>
+</head>
+
+<body data-glass-style="crystal">
+
+  <!-- ==========================================================================
+       1. TOP NAVIGATION HEADER
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <!-- Logo -->
+      <a href="#home" class="brand-logo-wrap" title="Sanjay's Lightworks">
+        <div class="brand-camera-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F3E5AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+            <circle cx="12" cy="13" r="3"/>
+          </svg>
+          <div class="brand-camera-ping"></div>
+        </div>
+        <div>
+          <div class="brand-text-name">SANJAY'S</div>
+          <div class="brand-text-sub">LIGHTWORKS</div>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="header-nav">
+        <a href="#services">SERVICES</a>
+        <a href="#pricing">PRICING &amp; PACKAGES</a>
+        <a href="#booking-configurator">RESERVATION</a>
+        <a href="#about">ABOUT</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <!-- Audio Mute Toggle -->
+        <button type="button" class="icon-utility-btn" id="audio-toggle-btn" title="Toggle Ambient Audio" aria-label="Toggle Sound">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
+
+        <!-- Light/Dark Mode Switcher -->
+        <button type="button" class="icon-utility-btn" id="theme-toggle-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Dark Mode">
+          <svg id="theme-sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <!-- Gallery Button -->
+        <a href="#gallery" class="btn-glass-secondary" style="padding: 10px 18px; font-size: 11px;">
+          GALLERY
+        </a>
+
+        <!-- Reserve CTA Button -->
+        <a href="#booking-configurator" class="btn-gold-primary" style="padding: 10px 20px; font-size: 11px;">
+          RESERVE
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       2. HERO SECTION
+       ========================================================================== -->
+  <section id="home" style="padding: 70px 20px 80px; text-align: center; max-width: 1100px; margin: 0 auto; position: relative;">
+    <div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 9999px; border: 1px solid rgba(212, 175, 55, 0.5); background: rgba(255, 255, 255, 0.7); font-size: 10px; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: #8C6207; margin-bottom: 28px;">
+      <span>● SANJAY'S LIGHTWORKS · ONTARIO, CANADA</span>
+    </div>
+
+    <h1 style="font-family: var(--font-cinzel); font-size: clamp(38px, 7vw, 76px); font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 24px;">
+      CAPTURING <br />
+      <span style="font-style: italic; color: #D4AF37; font-weight: 400;">MOMENTS</span> <br />
+      THAT LAST
+    </h1>
+
+    <p style="font-size: 15px; color: #6B6357; max-width: 640px; margin: 0 auto 36px; line-height: 1.7; font-weight: 500;">
+      Natural light, candid celebrations, and timeless portraits across Ontario, Canada. Pure visual storytelling with an elevated, unscripted aesthetic.
+    </p>
+
+    <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+      <a href="#booking-configurator" class="btn-gold-primary">
+        RESERVE SHOOT &nbsp;→
+      </a>
+      <a href="#gallery" class="btn-glass-secondary">
+        VIEW GALLERY
+      </a>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-emblem">
+      <div class="divider-diamond"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       3. SERVICES SECTION
+       ========================================================================== -->
+  <section id="services" style="padding: 70px 24px; max-width: 1240px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.25em; color: #8C6207; text-transform: uppercase;">
+        01 / SERVICES OFFERINGS
+      </span>
+      <h2 style="font-family: var(--font-cinzel); font-size: clamp(28px, 4vw, 44px); margin-top: 6px;">
+        DISCIPLINE &amp; FOCUS
+      </h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+      <!-- Service 1 -->
+      <div class="glass-card" style="padding: 32px 28px;">
+        <span style="font-family: var(--font-cinzel); font-size: 14px; color: #D4AF37; font-weight: 800;">01</span>
+        <h3 style="font-family: var(--font-cinzel); font-size: 20px; margin: 8px 0 12px; font-weight: 700;">
+          PORTRAITS &amp; COUPLES
+        </h3>
+        <p style="font-size: 13px; color: #6B6150; line-height: 1.6; margin-bottom: 20px;">
+          Relaxed sessions with natural posture &amp; organic ambient light. Timeless editorial heirlooms.
+        </p>
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.12em; color: #8C6207; text-transform: uppercase; display: block; margin-bottom: 20px;">
+          1–2 HOURS SESSION · CLOUD GALLERY
+        </span>
+        <a href="#booking-configurator" class="btn-glass-secondary" style="width: 100%; font-size: 11px;">SELECT &amp; BOOK</a>
+      </div>
+
+      <!-- Service 2 -->
+      <div class="glass-card" style="padding: 32px 28px;">
+        <span style="font-family: var(--font-cinzel); font-size: 14px; color: #D4AF37; font-weight: 800;">02</span>
+        <h3 style="font-family: var(--font-cinzel); font-size: 20px; margin: 8px 0 12px; font-weight: 700;">
+          CREATIVE &amp; THEMED
+        </h3>
+        <p style="font-size: 13px; color: #6B6150; line-height: 1.6; margin-bottom: 20px;">
+          Artistic concepts, narrative moodboards &amp; bespoke cinematic film grading for high-fashion projects.
+        </p>
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.12em; color: #8C6207; text-transform: uppercase; display: block; margin-bottom: 20px;">
+          UP TO 2-HOUR SESSION · MASTER FILES
+        </span>
+        <a href="#booking-configurator" class="btn-glass-secondary" style="width: 100%; font-size: 11px;">SELECT &amp; BOOK</a>
+      </div>
+
+      <!-- Service 3 -->
+      <div class="glass-card" style="padding: 32px 28px;">
+        <span style="font-family: var(--font-cinzel); font-size: 14px; color: #D4AF37; font-weight: 800;">03</span>
+        <h3 style="font-family: var(--font-cinzel); font-size: 20px; margin: 8px 0 12px; font-weight: 700;">
+          EVENTS &amp; CELEBRATIONS
+        </h3>
+        <p style="font-size: 13px; color: #6B6150; line-height: 1.6; margin-bottom: 20px;">
+          Immersive coverage capturing unscripted room energy, emotional toasts, and milestone celebrations.
+        </p>
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.12em; color: #8C6207; text-transform: uppercase; display: block; margin-bottom: 20px;">
+          UP TO 5 HOURS COVERAGE · FULL STORY
+        </span>
+        <a href="#booking-configurator" class="btn-glass-secondary" style="width: 100%; font-size: 11px;">SELECT &amp; BOOK</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-emblem">
+      <div class="divider-diamond"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       4. PRICING & INVESTMENT SECTION
+       ========================================================================== -->
+  <section id="pricing" style="padding: 70px 24px; max-width: 1240px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.25em; color: #8C6207; text-transform: uppercase;">
+        HIGH-RES UNWATERMARKED DOWNLOADS · ONTARIO, CA
+      </span>
+      <h2 style="font-family: var(--font-cinzel); font-size: clamp(28px, 4vw, 44px); margin-top: 6px;">
+        INVESTMENT &amp; RATES
+      </h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+      <!-- Rate 1 -->
+      <div class="glass-card" style="padding: 28px 24px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="height: 24px;"></div>
+          <h3 style="font-family: var(--font-cinzel); font-size: 17px; font-weight: 700; margin-bottom: 6px;">
+            SINGLE PHOTO SESSION
+          </h3>
+          <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 12px;">
+            <span style="font-family: var(--font-cinzel); font-size: 36px; font-weight: 800; color: #8C6207;">$50</span>
+            <span style="font-size: 11px; font-weight: 700; color: #8C8275;">CAD</span>
+          </div>
+          <p style="font-size: 12px; color: #5A5040; margin-bottom: 16px; font-weight: 600;">1–2 Hours Dedicated Session</p>
+          <ul style="list-style: none; font-size: 11px; color: #4A4030; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+            <li>✓ Unposed organic posture — genuine emotion</li>
+            <li>✓ Curated outdoor &amp; ambient light settings</li>
+            <li>✓ Relaxed direction crafted for timeless heirlooms</li>
+          </ul>
+        </div>
+        <a href="#booking-configurator" class="btn-glass-secondary" style="width: 100%; font-size: 11px; padding: 10px 14px;">SELECT &amp; BOOK</a>
+      </div>
+
+      <!-- Rate 2 -->
+      <div class="glass-card" style="padding: 28px 24px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="height: 24px;"></div>
+          <h3 style="font-family: var(--font-cinzel); font-size: 17px; font-weight: 700; margin-bottom: 6px;">
+            CREATIVE &amp; THEMED
+          </h3>
+          <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 12px;">
+            <span style="font-family: var(--font-cinzel); font-size: 36px; font-weight: 800; color: #8C6207;">$70</span>
+            <span style="font-size: 11px; font-weight: 700; color: #8C8275;">CAD</span>
+          </div>
+          <p style="font-size: 12px; color: #5A5040; margin-bottom: 16px; font-weight: 600;">Up to 2-Hour Session · Master Files</p>
+          <ul style="list-style: none; font-size: 11px; color: #4A4030; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+            <li>✓ Artistic concepts &amp; narrative moodboard styling</li>
+            <li>✓ Cinematic color science &amp; bespoke film grading</li>
+            <li>✓ Sculpted lighting with fine art compositions</li>
+          </ul>
+        </div>
+        <a href="#booking-configurator" class="btn-glass-secondary" style="width: 100%; font-size: 11px; padding: 10px 14px;">SELECT &amp; BOOK</a>
+      </div>
+
+      <!-- Rate 3 (Popular) -->
+      <div class="glass-card" style="padding: 28px 24px; display: flex; flex-direction: column; justify-content: space-between; border-color: rgba(212, 175, 55, 0.9); box-shadow: 0 12px 36px rgba(212, 175, 55, 0.2);">
+        <div>
+          <span style="background: #8C6207; color: #FFFFFF; font-size: 9px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 3px 10px; border-radius: 9999px; display: inline-block; margin-bottom: 8px;">POPULAR</span>
+          <h3 style="font-family: var(--font-cinzel); font-size: 17px; font-weight: 700; margin-bottom: 6px;">
+            TRADITIONAL CULTURE
+          </h3>
+          <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 12px;">
+            <span style="font-family: var(--font-cinzel); font-size: 36px; font-weight: 800; color: #8C6207;">$150</span>
+            <span style="font-size: 11px; font-weight: 700; color: #8C8275;">CAD</span>
+          </div>
+          <p style="font-size: 12px; color: #5A5040; margin-bottom: 16px; font-weight: 600;">4–5 Hours Coverage · Archival Storage</p>
+          <ul style="list-style: none; font-size: 11px; color: #4A4030; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+            <li>✓ Sacred ritual observance &amp; cultural reverence</li>
+            <li>✓ Vibrant silk fidelity &amp; heirloom jewelry detailing</li>
+            <li>✓ Multi-generational family legacy preservation</li>
+          </ul>
+        </div>
+        <a href="#booking-configurator" class="btn-gold-primary" style="width: 100%; font-size: 11px; padding: 10px 14px;">SELECT &amp; BOOK</a>
+      </div>
+
+      <!-- Rate 4 -->
+      <div class="glass-card" style="padding: 28px 24px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <span style="background: #8C6207; color: #FFFFFF; font-size: 9px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; padding: 3px 10px; border-radius: 9999px; display: inline-block; margin-bottom: 8px;">POPULAR</span>
+          <h3 style="font-family: var(--font-cinzel); font-size: 17px; font-weight: 700; margin-bottom: 6px;">
+            EVENTS &amp; CELEBRATIONS
+          </h3>
+          <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 12px;">
+            <span style="font-family: var(--font-cinzel); font-size: 36px; font-weight: 800; color: #8C6207;">$200</span>
+            <span style="font-size: 11px; font-weight: 700; color: #8C8275;">CAD</span>
+          </div>
+          <p style="font-size: 12px; color: #5A5040; margin-bottom: 16px; font-weight: 600;">Up to 5 Hours Coverage · Full Story</p>
+          <ul style="list-style: none; font-size: 11px; color: #4A4030; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+            <li>✓ Documentary celebration candids &amp; room energy</li>
+            <li>✓ Unfiltered emotional exchanges, toasts &amp; rituals</li>
+            <li>✓ Discreet observation covering key milestone moments</li>
+          </ul>
+        </div>
+        <a href="#booking-configurator" class="btn-gold-primary" style="width: 100%; font-size: 11px; padding: 10px 14px;">SELECT &amp; BOOK</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-emblem">
+      <div class="divider-diamond"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       5. DIRECT CALENDAR RESERVATION & CONFIGURATOR (ISSUE 2 FIX: HIGH CONTRAST)
+       ========================================================================== -->
+  <section id="booking-configurator" style="padding: 70px 24px; max-width: 1240px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+      <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.2em; color: #8C6207; text-transform: uppercase;">
+        SANJAY · ONTARIO, CANADA ● COMMISSIONS OPEN
+      </span>
+      <span style="font-size: 11px; font-weight: 700; color: #6B6150;">
+        Direct Calendar Booking
+      </span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 32px; align-items: start;">
+      <div style="display: grid; grid-template-columns: 1fr; gap: 28px;">
+        
+        <!-- 1. OPTIONAL ENHANCEMENTS (ADD-ONS) -->
+        <div class="glass-card" style="padding: 28px;">
+          <div class="form-heading-badge" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; background: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8C6207" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #14110B;">1. OPTIONAL ENHANCEMENTS (ADD-ONS)</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <!-- Addon 1 -->
+            <label style="display: flex; align-items: flex-start; justify-content: space-between; padding: 16px; border-radius: 16px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.7); cursor: pointer; transition: all 0.2s ease;">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <input type="checkbox" id="addon-shooter" style="margin-top: 3px; accent-color: #8C6207; width: 16px; height: 16px;">
+                <div>
+                  <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #14110B; letter-spacing: 0.05em;">SECONDARY PHOTOGRAPHER</div>
+                  <div style="font-size: 11px; color: #3D352A; margin-top: 2px; font-weight: 500;">Dedicated 2nd shooter capturing simultaneous guest reactions &amp; candid angles.</div>
+                </div>
+              </div>
+              <span class="addon-price" style="font-size: 12px; font-weight: 800; color: #6E4E04; white-space: nowrap; margin-left: 12px;">+$40 CAD</span>
+            </label>
+
+            <!-- Addon 2 -->
+            <label style="display: flex; align-items: flex-start; justify-content: space-between; padding: 16px; border-radius: 16px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.7); cursor: pointer; transition: all 0.2s ease;">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <input type="checkbox" id="addon-drone" style="margin-top: 3px; accent-color: #8C6207; width: 16px; height: 16px;">
+                <div>
+                  <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #14110B; letter-spacing: 0.05em;">4K AERIAL DRONE COVERAGE</div>
+                  <div style="font-size: 11px; color: #3D352A; margin-top: 2px; font-weight: 500;">Cinematic bird-eye views of celebration venue, landscape &amp; scenery.</div>
+                </div>
+              </div>
+              <span class="addon-price" style="font-size: 12px; font-weight: 800; color: #6E4E04; white-space: nowrap; margin-left: 12px;">+$35 CAD</span>
+            </label>
+
+            <!-- Addon 3 -->
+            <label style="display: flex; align-items: flex-start; justify-content: space-between; padding: 16px; border-radius: 16px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.7); cursor: pointer; transition: all 0.2s ease;">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <input type="checkbox" id="addon-hour" style="margin-top: 3px; accent-color: #8C6207; width: 16px; height: 16px;">
+                <div>
+                  <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: #14110B; letter-spacing: 0.05em;">ADDITIONAL HOUR OF COVERAGE</div>
+                  <div style="font-size: 11px; color: #3D352A; margin-top: 2px; font-weight: 500;">Extra shooting time for reception after-parties or sunset portraits.</div>
+                </div>
+              </div>
+              <span class="addon-price" style="font-size: 12px; font-weight: 800; color: #6E4E04; white-space: nowrap; margin-left: 12px;">+$30 CAD</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 2. DATE & TIME WINDOW -->
+        <div class="glass-card" style="padding: 28px;">
+          <div class="form-heading-badge" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; background: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8C6207" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #14110B;">2. DATE &amp; TIME WINDOW</span>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #383023; display: block; margin-bottom: 6px;">
+              SHOOT DATE *
+            </label>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 14px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.75);">
+              <span style="font-size: 13px; font-weight: 800; color: #14110B;" id="display-selected-date">Sat, Oct 17, 2026</span>
+              <button type="button" class="btn-glass-secondary" style="padding: 6px 14px; font-size: 10px;" onclick="alert('Date selection active: Free 48h rescheduling included.');">CHANGE DATE</button>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <label style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #383023; display: block; margin-bottom: 6px;">
+                PREFERRED START TIME
+              </label>
+              <button type="button" id="open-time-picker-btn" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 14px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.75); font-size: 13px; font-weight: 800; color: #14110B;">
+                <span id="display-start-time">09:30 AM</span>
+                <span style="color: #8C6207;">🕒</span>
+              </button>
+            </div>
+
+            <div>
+              <label style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #383023; display: block; margin-bottom: 6px;">
+                PREFERRED END TIME
+              </label>
+              <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 14px; border: 1px solid #D5CDBD; background: rgba(0, 0, 0, 0.04); font-size: 13px; font-weight: 700; color: #5A5040;">
+                <span id="display-end-time">11:30 AM</span>
+                <span style="color: #8C8275;">🕒</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. CLIENT CONTACT DETAILS -->
+        <div class="glass-card" style="padding: 28px;">
+          <div class="form-heading-badge" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px; background: rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8C6207" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #14110B;">3. CLIENT CONTACT DETAILS</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <label style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #383023; display: block; margin-bottom: 6px;">
+                YOUR NAME *
+              </label>
+              <input type="text" placeholder="e.g. Priya Sharma" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: 600; color: #14110B;">
+            </div>
+
+            <div>
+              <label style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #383023; display: block; margin-bottom: 6px;">
+                EMAIL ADDRESS *
+              </label>
+              <input type="email" placeholder="e.g. priya@gmail.com" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: 600; color: #14110B;">
+            </div>
+
+            <div style="grid-column: span 2;">
+              <label style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #383023; display: block; margin-bottom: 6px;">
+                PHONE / WHATSAPP NUMBER
+              </label>
+              <input type="tel" placeholder="e.g. (905) 555-0142" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #D5CDBD; background: rgba(255, 255, 255, 0.7); font-size: 12px; font-weight: 600; color: #14110B;">
+            </div>
+          </div>
+
+          <button type="button" class="btn-gold-primary" style="width: 100%; margin-top: 24px; padding: 15px;" onclick="alert('Thank you! Your photoshoot reservation request has been submitted to Sanjay.');">
+            CONFIRM YOUR SESSION &nbsp;✓
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-emblem">
+      <div class="divider-diamond"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       6. EXTENDED GALLERY ARCHIVE (ISSUE 4 FIX: ASPECT-3/4 & CARD #29 FALLBACK)
+       ========================================================================== -->
+  <section id="gallery" style="padding: 70px 24px; max-width: 1240px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 36px;">
+      <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.25em; color: #8C6207; text-transform: uppercase;">
+        04 / GALLERY ARCHIVE
+      </span>
+      <h2 style="font-family: var(--font-cinzel); font-size: clamp(28px, 4vw, 44px); margin-top: 6px; font-weight: 500;">
+        STILL VISION &amp; FEATURED
+      </h2>
+    </div>
+
+    <!-- Gallery Grid with Strict aspect-[3/4] & Robust Error Fallbacks -->
+    <div class="gallery-grid">
+      <!-- Card 1: Still Vision -->
+      <div class="gallery-card">
+        <div class="gallery-img-frame">
+          <div class="golden-shimmer-placeholder"></div>
+          <img src="/images/still-vision-1.jpg" alt="Still Vision Contemplation" onerror="this.src='/images/golden-grace-2.jpg';">
+        </div>
+        <div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); color: #FFF;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">STILL VISION · CONTEMPLATION</span>
+          <span style="font-size: 10px; color: #D4AF37; font-weight: 800;">PORTRAIT</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Still Vision -->
+      <div class="gallery-card">
+        <div class="gallery-img-frame">
+          <div class="golden-shimmer-placeholder"></div>
+          <img src="/images/still-vision-2.jpg" alt="Still Vision Chiaroscuro" onerror="this.src='/images/still-vision-1.jpg';">
+        </div>
+        <div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); color: #FFF;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">STILL VISION · CHIAROSCURO</span>
+          <span style="font-size: 10px; color: #D4AF37; font-weight: 800;">EDITORIAL</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Still Vision -->
+      <div class="gallery-card">
+        <div class="gallery-img-frame">
+          <div class="golden-shimmer-placeholder"></div>
+          <img src="/images/still-vision-3.jpg" alt="Still Vision Quiet Gaze" onerror="this.src='/images/golden-grace-1.jpg';">
+        </div>
+        <div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); color: #FFF;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">STILL VISION · QUIET GAZE</span>
+          <span style="font-size: 10px; color: #D4AF37; font-weight: 800;">PORTRAIT</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Featured -->
+      <div class="gallery-card">
+        <div class="gallery-img-frame">
+          <div class="golden-shimmer-placeholder"></div>
+          <img src="/images/golden-grace-2.jpg" alt="Featured Heirloom Radiance" onerror="this.src='/images/still-vision-1.jpg';">
+        </div>
+        <div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); color: #FFF;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">FEATURED · HEIRLOOM RADIANCE</span>
+          <span style="font-size: 10px; color: #D4AF37; font-weight: 800;">FEATURED</span>
+        </div>
+      </div>
+
+      <!-- Card 5: Featured -->
+      <div class="gallery-card">
+        <div class="gallery-img-frame">
+          <div class="golden-shimmer-placeholder"></div>
+          <img src="/images/golden-grace-1.jpg" alt="Featured Bridal Silk" onerror="this.src='/images/golden-grace-2.jpg';">
+        </div>
+        <div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); color: #FFF;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">FEATURED · BRIDAL SILK</span>
+          <span style="font-size: 10px; color: #D4AF37; font-weight: 800;">FEATURED</span>
+        </div>
+      </div>
+
+      <!-- Card 6: Featured / Still Life in Shadows -->
+      <div class="gallery-card" id="card-29-still-life">
+        <div class="gallery-img-frame">
+          <div class="golden-shimmer-placeholder"></div>
+          <!-- Robust fallback cascade guarantees image renders beautifully -->
+          <img 
+            src="/images/gallery-15.jpg" 
+            alt="Featured Still Life in Shadows"
+            loading="lazy"
+            onerror="this.onerror=null; this.src='/images/still-vision-1.jpg';"
+            onload="this.previousElementSibling.style.display='none';"
+          >
+        </div>
+        <div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); color: #FFF;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;">FEATURED · STILL LIFE IN SHADOWS</span>
+          <span style="font-size: 10px; color: #D4AF37; font-weight: 800;">FEATURED</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Divider -->
+  <div class="section-divider">
+    <div class="section-divider-line"></div>
+    <div class="section-divider-emblem">
+      <div class="divider-diamond"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       7. ABOUT THE ARTIST SECTION
+       ========================================================================== -->
+  <section id="about" style="padding: 70px 24px; max-width: 1240px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; align-items: center;">
+      <div class="glass-card" style="padding: 0; overflow: hidden; aspect-ratio: 4 / 5; position: relative;">
+        <img src="/images/portrait.png" alt="Sanjay NB Lead Photographer" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(115%);">
+        <div style="position: absolute; bottom: 0; inset-inline: 0; padding: 24px; background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%); color: #FFF;">
+          <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.2em; color: #D4AF37; text-transform: uppercase;">LEAD PHOTOGRAPHER</span>
+          <h3 style="font-family: var(--font-cinzel); font-size: 24px; font-weight: 700;">SANJAY NB</h3>
+          <p style="font-size: 12px; color: rgba(255,255,255,0.7);">Ontario, Canada</p>
+        </div>
+      </div>
+
+      <div>
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.25em; color: #8C6207; text-transform: uppercase;">
+          ABOUT THE ARTIST · ONTARIO, CANADA
+        </span>
+        <h2 style="font-family: var(--font-cinzel); font-size: clamp(28px, 4vw, 42px); line-height: 1.2; margin: 12px 0 20px;">
+          SANJAY'S LIGHTWORKS <br />
+          <span style="font-style: italic; color: #D4AF37; font-weight: 400;">organic storytelling &amp;</span> <br />
+          TIMELESS PORTRAITURE
+        </h2>
+        <p style="font-size: 14px; color: #5A5040; line-height: 1.8; margin-bottom: 28px;">
+          I create unposed, authentic imagery shaped by directional natural light across Ontario, Canada. Every session is relaxed, collaborative, and designed to capture genuine emotion without rigid stiffness.
+        </p>
+
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+          <a href="#booking-configurator" class="btn-gold-primary">DISCUSS YOUR COMMISSION &nbsp;→</a>
+          <a href="https://wa.me/19055882047" target="_blank" rel="noreferrer" class="btn-glass-secondary">CHAT ON WHATSAPP</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       8. FOOTER (ISSUE 1 FIX: PADDING ENSURES NO OCCLUSION OF STUDIO ACCESS)
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p class="footer-address">
+        Sanjay's Lightworks · Mississauga · Greater Toronto Area · nsanjayb@gmail.com · (905) 588-2047
+      </p>
+      <div class="footer-bottom-line">
+        <span>© 2026 Sanjay's Lightworks. All rights reserved.</span>
+        <button type="button" class="studio-access-btn" id="studio-access-link" title="Private Studio Ops">
+          ● Studio Access
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       9. FLOATING GLASS SWITCHER HUD (ISSUE 1 FIX: BOTTOM-LEFT PLACEMENT)
+       ========================================================================== -->
+  <div id="floating-glass-hud">
+    <div class="hud-pill-wrap">
+      <span class="hud-title-label">GLASS PHYSICS:</span>
+      <button type="button" class="hud-theme-btn active" data-style="crystal">Crystal</button>
+      <button type="button" class="hud-theme-btn" data-style="gold">Gold</button>
+      <button type="button" class="hud-theme-btn" data-style="obsidian">Obsidian</button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       10. FLOATING CONTACT BUTTON & DRAWER (ISSUE 1 FIX: BOTTOM-RIGHT PLACEMENT)
+       ========================================================================== -->
+  <div id="floating-contact-widget">
+    <div class="contact-flyout-drawer" id="contact-drawer">
+      <a href="https://wa.me/19055882047?text=Hello%20Sanjay,%20I%20would%20like%20to%20inquire%20about%20a%20photoshoot!" target="_blank" rel="noreferrer" class="contact-item-row">
+        <span>💬</span>
+        <div>
+          <div>WhatsApp Chat</div>
+          <div style="font-size: 9px; opacity: 0.6;">(905) 588-2047</div>
+        </div>
+      </a>
+      <a href="https://instagram.com/sanjayslightworks" target="_blank" rel="noreferrer" class="contact-item-row">
+        <span>📸</span>
+        <div>
+          <div>Instagram Portfolio</div>
+          <div style="font-size: 9px; opacity: 0.6;">@sanjayslightworks</div>
+        </div>
+      </a>
+      <a href="#booking-configurator" class="contact-item-row">
+        <span>✉️</span>
+        <div>
+          <div>Direct Inquiry</div>
+          <div style="font-size: 9px; opacity: 0.6;">Calendar Reservation</div>
+        </div>
+      </a>
+    </div>
+
+    <button type="button" class="contact-trigger-pill" id="contact-toggle-btn">
+      <div class="pulse-dot"></div>
+      <span>+ CONTACT</span>
+    </button>
+  </div>
+
+  <!-- ==========================================================================
+       11. REFACTORED PREFERRED START TIME MODAL (ISSUE 3 FIX: UN-STACKED)
+       ========================================================================== -->
+  <div class="time-picker-modal-overlay" id="time-picker-modal">
+    <div class="time-picker-dialog">
+      <button type="button" class="time-close-x" id="time-modal-close-btn">&times;</button>
+
+      <div style="text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 12px; margin-bottom: 16px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #8C6207; display: block;">
+          EXACT TIME SELECTOR
+        </span>
+        <h3 style="font-family: var(--font-cinzel); font-size: 20px; font-weight: 700; margin-top: 4px;">
+          PREFERRED START TIME
+        </h3>
+      </div>
+
+      <!-- BLOCK 1: Selected Time Display & AM/PM Toggle -->
+      <div class="time-live-preview-box">
+        <div style="display: flex; align-items: baseline; gap: 4px;">
+          <span class="time-big-digits" id="preview-hour">09</span>
+          <span style="font-size: 26px; font-weight: bold; color: #8C6207;">:</span>
+          <span class="time-big-digits" id="preview-minute">30</span>
+          <span style="font-size: 12px; font-weight: 800; color: #8C6207; margin-left: 6px;" id="preview-ampm">AM</span>
+        </div>
+
+        <div class="time-ampm-switcher">
+          <button type="button" class="time-ampm-btn active" id="ampm-am-btn">AM</button>
+          <button type="button" class="time-ampm-btn" id="ampm-pm-btn">PM</button>
+        </div>
+      </div>
+
+      <!-- BLOCK 2: Quick Adjustment Buttons (-5m, -1m, +1m, +5m) -->
+      <div class="quick-adj-container">
+        <span class="quick-adj-label">Quick Adjustments:</span>
+        <div class="quick-adj-grid">
+          <button type="button" class="quick-adj-btn" data-adj="-5">-5m</button>
+          <button type="button" class="quick-adj-btn" data-adj="-1">-1m</button>
+          <button type="button" class="quick-adj-btn" data-adj="+1">+1m</button>
+          <button type="button" class="quick-adj-btn" data-adj="+5">+5m</button>
+        </div>
+      </div>
+
+      <!-- BLOCK 3: High Touch-Target Dual Columns (Hour 01–12 & Minute 00–59) -->
+      <div class="time-columns-wrapper">
+        <!-- Hour Column -->
+        <div>
+          <div class="time-column-header">HOUR (01–12)</div>
+          <div class="time-scroll-list" id="hour-scroll-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Minute Column -->
+        <div style="border-left: 1px solid #ECE7DC; padding-left: 8px;">
+          <div class="time-column-header">MINUTE (00–59)</div>
+          <div class="time-scroll-list" id="minute-scroll-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCK 4: Actions -->
+      <button type="button" class="btn-gold-primary" id="confirm-time-btn" style="width: 100%; padding: 14px; font-size: 12px;">
+        ✓ CONFIRM TIME (<span id="btn-time-confirm-label">09:30 AM</span>)
+      </button>
+
+      <button type="button" id="time-modal-cancel-btn" style="width: 100%; text-align: center; margin-top: 10px; font-size: 11px; font-weight: 800; color: #8C8275; text-transform: uppercase;">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       12. JAVASCRIPT CONTROLLERS
+       ========================================================================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // State Management
+      var state = {
+        theme: 'light',
+        glassStyle: 'crystal',
+        hour: 9,
+        minute: 30,
+        ampm: 'AM'
+      };
+
+      // 1. Dark/Light Theme Switcher
+      var themeBtn = document.getElementById('theme-toggle-btn');
+      themeBtn.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        state.theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      });
+
+      // 2. Optical Glass Physics Switcher (Crystal / Gold / Obsidian)
+      var hudButtons = document.querySelectorAll('.hud-theme-btn');
+      hudButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          hudButtons.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          var style = btn.getAttribute('data-style');
+          document.body.setAttribute('data-glass-style', style);
+          state.glassStyle = style;
+        });
+      });
+
+      // 3. Floating Contact Flyout Toggle
+      var contactToggleBtn = document.getElementById('contact-toggle-btn');
+      var contactDrawer = document.getElementById('contact-drawer');
+      contactToggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        contactDrawer.classList.toggle('open');
+      });
+      document.addEventListener('click', function() {
+        contactDrawer.classList.remove('open');
+      });
+
+      // 4. Time Picker Modal Controller
+      var timeModal = document.getElementById('time-picker-modal');
+      var openTimePickerBtn = document.getElementById('open-time-picker-btn');
+      var closeTimeBtn = document.getElementById('time-modal-close-btn');
+      var cancelTimeBtn = document.getElementById('time-modal-cancel-btn');
+      var confirmTimeBtn = document.getElementById('confirm-time-btn');
+
+      var previewHour = document.getElementById('preview-hour');
+      var previewMinute = document.getElementById('preview-minute');
+      var previewAmpm = document.getElementById('preview-ampm');
+      var btnConfirmLabel = document.getElementById('btn-time-confirm-label');
+
+      var ampmAmBtn = document.getElementById('ampm-am-btn');
+      var ampmPmBtn = document.getElementById('ampm-pm-btn');
+
+      var hourContainer = document.getElementById('hour-scroll-container');
+      var minuteContainer = document.getElementById('minute-scroll-container');
+
+      function updateTimeDisplay() {
+        var hStr = String(state.hour).padStart(2, '0');
+        var mStr = String(state.minute).padStart(2, '0');
+        previewHour.textContent = hStr;
+        previewMinute.textContent = mStr;
+        previewAmpm.textContent = state.ampm;
+        btnConfirmLabel.textContent = hStr + ':' + mStr + ' ' + state.ampm;
+
+        if (state.ampm === 'AM') {
+          ampmAmBtn.classList.add('active');
+          ampmPmBtn.classList.remove('active');
+        } else {
+          ampmPmBtn.classList.add('active');
+          ampmAmBtn.classList.remove('active');
+        }
+
+        // Highlight selected buttons in lists
+        document.querySelectorAll('.time-touch-item[data-hour]').forEach(function(item) {
+          item.classList.toggle('selected', parseInt(item.getAttribute('data-hour'), 10) === state.hour);
+        });
+        document.querySelectorAll('.time-touch-item[data-minute]').forEach(function(item) {
+          item.classList.toggle('selected', parseInt(item.getAttribute('data-minute'), 10) === state.minute);
+        });
+      }
+
+      function populateTimeLists() {
+        // Populate Hours (01–12)
+        hourContainer.innerHTML = '';
+        for (var h = 1; h <= 12; h++) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'time-touch-item';
+          btn.setAttribute('data-hour', h);
+          btn.textContent = String(h).padStart(2, '0');
+          (function(val) {
+            btn.addEventListener('click', function() {
+              state.hour = val;
+              updateTimeDisplay();
+            });
+          })(h);
+          hourContainer.appendChild(btn);
+        }
+
+        // Populate Minutes (00–59)
+        minuteContainer.innerHTML = '';
+        for (var m = 0; m < 60; m++) {
+          var mBtn = document.createElement('button');
+          mBtn.type = 'button';
+          mBtn.className = 'time-touch-item';
+          mBtn.setAttribute('data-minute', m);
+          mBtn.textContent = ':' + String(m).padStart(2, '0');
+          (function(val) {
+            mBtn.addEventListener('click', function() {
+              state.minute = val;
+              updateTimeDisplay();
+            });
+          })(m);
+          minuteContainer.appendChild(mBtn);
+        }
+      }
+
+      populateTimeLists();
+      updateTimeDisplay();
+
+      openTimePickerBtn.addEventListener('click', function() {
+        timeModal.classList.add('active');
+        // Scroll selected into view
+        setTimeout(function() {
+          var selH = hourContainer.querySelector('.selected');
+          if (selH) selH.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          var selM = minuteContainer.querySelector('.selected');
+          if (selM) selM.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }, 50);
+      });
+
+      closeTimeBtn.addEventListener('click', function() { timeModal.classList.remove('active'); });
+      cancelTimeBtn.addEventListener('click', function() { timeModal.classList.remove('active'); });
+
+      ampmAmBtn.addEventListener('click', function() {
+        state.ampm = 'AM';
+        updateTimeDisplay();
+      });
+      ampmPmBtn.addEventListener('click', function() {
+        state.ampm = 'PM';
+        updateTimeDisplay();
+      });
+
+      // Quick adjustment buttons
+      document.querySelectorAll('.quick-adj-btn').forEach(function(adjBtn) {
+        adjBtn.addEventListener('click', function() {
+          var delta = parseInt(adjBtn.getAttribute('data-adj'), 10);
+          var newMin = state.minute + delta;
+          if (newMin < 0) newMin = 0;
+          if (newMin > 59) newMin = 59;
+          state.minute = newMin;
+          updateTimeDisplay();
+        });
+      });
+
+      // Confirm Time
+      confirmTimeBtn.addEventListener('click', function() {
+        var hStr = String(state.hour).padStart(2, '0');
+        var mStr = String(state.minute).padStart(2, '0');
+        var finalStart = hStr + ':' + mStr + ' ' + state.ampm;
+        document.getElementById('display-start-time').textContent = finalStart;
+
+        // Calculate end time (+2 hours)
+        var endHourNum = ((state.hour + 2 - 1) % 12) + 1;
+        var endHStr = String(endHourNum).padStart(2, '0');
+        document.getElementById('display-end-time').textContent = endHStr + ':' + mStr + ' ' + state.ampm;
+
+        timeModal.classList.remove('active');
+      });
+
+      // 5. Studio Access Handler (In-App Toast notification, zero intrusive alerts)
+      var studioLink = document.getElementById('studio-access-link');
+      if (studioLink) {
+        studioLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          var existing = document.getElementById('studio-access-toast');
+          if (existing) existing.remove();
+          var toast = document.createElement('div');
+          toast.id = 'studio-access-toast';
+          toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#14110B;color:#FFF;padding:12px 24px;border-radius:16px;border:1px solid #D4AF37;box-shadow:0 12px 30px rgba(0,0,0,0.5);font-size:12px;font-weight:700;z-index:9999;transition:opacity 0.3s;';
+          toast.textContent = '● Studio Access: Authenticated session active for Sanjay NB.';
+          document.body.appendChild(toast);
+          setTimeout(function() {
+            toast.style.opacity = '0';
+            setTimeout(function() { toast.remove(); }, 300);
+          }, 3200);
+        });
+      }
+
+    })();
+  </script>
+</body>
+</html>

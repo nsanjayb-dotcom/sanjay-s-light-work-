@@ -1,0 +1,6 @@
+{
+  "name": "Sanjay's Lightwork - Photography & Cinematography",
+  "description": "Visual storytelling studio featuring responsive masonry galleries, pinch-and-swipe lightbox, transparent shoot pricing, Google Calendar booking integration, automatic email notifications, and creative project dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
