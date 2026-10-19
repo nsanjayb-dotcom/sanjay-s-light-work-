@@ -58,11 +58,13 @@ export const PricingPage: React.FC<PricingPageProps> = ({
     soundEngine.hapticTap();
     if (!carouselRef.current) return;
     const cards = carouselRef.current.children;
-    if (cards[index]) {
-      (cards[index] as HTMLElement).scrollIntoView({
+    const targetCard = cards[index] as HTMLElement;
+    if (targetCard) {
+      const container = carouselRef.current;
+      const targetLeft = targetCard.offsetLeft - (container.clientWidth - targetCard.offsetWidth) / 2;
+      container.scrollTo({
+        left: Math.max(0, targetLeft),
         behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
       });
       setActiveCarouselIdx(index);
     }
@@ -253,10 +255,9 @@ export const PricingPage: React.FC<PricingPageProps> = ({
           <div className="flex items-center justify-between px-2 pt-2">
             <button
               type="button"
-              onClick={() => scrollToCard(Math.max(0, activeCarouselIdx - 1))}
-              disabled={activeCarouselIdx === 0}
+              onClick={() => scrollToCard(activeCarouselIdx > 0 ? activeCarouselIdx - 1 : PRICING_PACKAGES.length - 1)}
               aria-label="Previous card"
-              className="min-h-[48px] min-w-[48px] rounded-full border border-stone-300 dark:border-white/15 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              className="min-h-[44px] min-w-[44px] rounded-full border border-stone-300 dark:border-white/15 hover:border-[var(--gold)] flex items-center justify-center text-[var(--foreground)] active:scale-95 transition-all cursor-pointer"
             >
               <ChevronLeft size={18} />
             </button>
@@ -279,10 +280,9 @@ export const PricingPage: React.FC<PricingPageProps> = ({
 
             <button
               type="button"
-              onClick={() => scrollToCard(Math.min(PRICING_PACKAGES.length - 1, activeCarouselIdx + 1))}
-              disabled={activeCarouselIdx === PRICING_PACKAGES.length - 1}
+              onClick={() => scrollToCard(activeCarouselIdx < PRICING_PACKAGES.length - 1 ? activeCarouselIdx + 1 : 0)}
               aria-label="Next card"
-              className="min-h-[48px] min-w-[48px] rounded-full border border-stone-300 dark:border-white/15 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              className="min-h-[44px] min-w-[44px] rounded-full border border-stone-300 dark:border-white/15 hover:border-[var(--gold)] flex items-center justify-center text-[var(--foreground)] active:scale-95 transition-all cursor-pointer"
             >
               <ChevronRight size={18} />
             </button>

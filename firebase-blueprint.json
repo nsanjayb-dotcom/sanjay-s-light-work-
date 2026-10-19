@@ -74,7 +74,7 @@
     },
     "Booking": {
       "title": "Booking",
-      "description": "Photo shoot reservation record",
+      "description": "Photo shoot reservation record storing all client booking data",
       "type": "object",
       "properties": {
         "id": {
@@ -148,6 +148,60 @@
         "createdAt"
       ]
     },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Client message and custom session inquiry record",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique inquiry reference identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Client contact full name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Client email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Client phone number"
+        },
+        "service": {
+          "type": "string",
+          "description": "Requested photography service discipline"
+        },
+        "date": {
+          "type": "string",
+          "description": "Requested or preferred session date"
+        },
+        "message": {
+          "type": "string",
+          "description": "Sanitized inquiry message content"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["unread", "read", "replied"],
+          "description": "Inquiry review status"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Inquiry submission timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "message",
+        "status",
+        "createdAt"
+      ]
+    },
     "Review": {
       "title": "Review",
       "description": "Client testimonial and star rating",
@@ -198,6 +252,10 @@
     "/bookings/{bookingId}": {
       "schema": "Booking",
       "description": "Client photography session reservations"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Client inquiries and contact form submissions"
     },
     "/reviews/{reviewId}": {
       "schema": "Review",

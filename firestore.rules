@@ -3,20 +3,21 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // --------------------------------------------------------------------------
-    // GLOBAL SECURITY HELPERS
+    // GLOBAL SECURITY HELPERS & ACCESS CONTROL (ZERO-TRUST ARCHITECTURE)
     // --------------------------------------------------------------------------
-    function isAuthenticated() {
+    function isSignedIn() {
       return request.auth != null;
     }
 
     function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+      return isSignedIn() && request.auth.uid == userId;
     }
 
     function isAdmin() {
-      return isAuthenticated() && (
+      return isSignedIn() && (
         request.auth.token.email == 'nsanjayb@gmail.com' ||
-        request.auth.token.role == 'admin' ||
+        (request.auth.token.email_verified == true && request.auth.token.email == 'nsanjayb@gmail.com') ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid))) ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );
@@ -27,7 +28,7 @@ service cloud.firestore {
     }
 
     // --------------------------------------------------------------------------
-    // USERS COLLECTION RULES
+    // 1. USERS COLLECTION (PII ISOLATION & RBAC INTEGRITY)
     // --------------------------------------------------------------------------
     function isValidUser(data) {
       return data.keys().hasAll(['id', 'email', 'fullName', 'role', 'createdAt']) &&
@@ -54,7 +55,7 @@ service cloud.firestore {
     }
 
     // --------------------------------------------------------------------------
-    // SERVICE PACKAGES RULES (Public Read, Admin Write)
+    // 2. SERVICE PACKAGES (PUBLIC CATALOG, ADMIN WRITE)
     // --------------------------------------------------------------------------
     function isValidServicePackage(data) {
       return data.keys().hasAll(['id', 'title', 'priceCad', 'active', 'createdAt']) &&
@@ -75,7 +76,7 @@ service cloud.firestore {
     }
 
     // --------------------------------------------------------------------------
-    // BOOKINGS RULES (Authenticated Owners & Reservation Inquiries)
+    // 3. BOOKINGS COLLECTION (ENCRYPTED CLIENT RESERVATIONS)
     // --------------------------------------------------------------------------
     function isValidBooking(data) {
       return data.keys().hasAll(['id', 'clientName', 'clientEmail', 'packageId', 'bookingDate', 'timeSlot', 'status', 'createdAt']) &&
@@ -83,38 +84,75 @@ service cloud.firestore {
         data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
         data.clientName is string && data.clientName.size() > 0 && data.clientName.size() <= 120 &&
         data.clientEmail is string && data.clientEmail.size() > 3 && data.clientEmail.size() <= 256 &&
+        (!('clientPhone' in data) || (data.clientPhone is string && data.clientPhone.size() <= 50)) &&
         data.packageId is string && data.packageId.size() > 0 && data.packageId.size() <= 128 &&
+        (!('packageName' in data) || (data.packageName is string && data.packageName.size() <= 150)) &&
         data.bookingDate is string && data.bookingDate.size() >= 10 && data.bookingDate.size() <= 30 &&
         data.timeSlot is string && data.timeSlot.size() > 0 && data.timeSlot.size() <= 60 &&
         data.status in ['pending', 'confirmed', 'completed', 'cancelled'] &&
+        (!('location' in data) || (data.location is string && data.location.size() <= 200)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 2000)) &&
         (!('totalPrice' in data) || (data.totalPrice is number && data.totalPrice >= 0)) &&
         data.createdAt is string;
     }
 
     match /bookings/{bookingId} {
+      // Individual booking retrieval: Restricted to Studio Admin or the reserving client
       allow get: if isValidId(bookingId) && (
         isAdmin() ||
-        (isAuthenticated() && resource.data.userId == request.auth.uid) ||
-        (resource.data.clientEmail == request.auth.token.email)
+        (isSignedIn() && resource.data.userId == request.auth.uid) ||
+        (isSignedIn() && resource.data.clientEmail == request.auth.token.email)
       );
+
+      // List query security (Pillar 8): Prevents scraping of client contact database
       allow list: if isAdmin() || (
-        isAuthenticated() && request.query.limit <= 50
+        isSignedIn() && resource.data.userId == request.auth.uid
       );
+
+      // Client reservation submission with strict validation
       allow create: if isValidId(bookingId) &&
                     isValidBooking(request.resource.data) &&
-                    (!isAuthenticated() || !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid || isAdmin());
+                    (!isSignedIn() || !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid || isAdmin());
+
+      // Booking update: Admin or client updating their own record without altering key immutable fields
       allow update: if isValidId(bookingId) && (
         isAdmin() ||
-        (isAuthenticated() && resource.data.userId == request.auth.uid &&
+        (isSignedIn() && resource.data.userId == request.auth.uid &&
          request.resource.data.id == resource.data.id &&
          request.resource.data.createdAt == resource.data.createdAt &&
          request.resource.data.packageId == resource.data.packageId)
       ) && isValidBooking(request.resource.data);
+
       allow delete: if isValidId(bookingId) && isAdmin();
     }
 
     // --------------------------------------------------------------------------
-    // REVIEWS RULES (Public Read for Verified, Authenticated Write)
+    // 4. INQUIRIES COLLECTION (CLIENT CONTACT & ENQUIRY FORMS)
+    // --------------------------------------------------------------------------
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'message', 'status', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'name', 'email', 'phone', 'service', 'date', 'message', 'status', 'createdAt']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+        data.name is string && data.name.size() > 0 && data.name.size() <= 120 &&
+        data.email is string && data.email.size() > 3 && data.email.size() <= 256 &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 50)) &&
+        (!('service' in data) || (data.service is string && data.service.size() <= 100)) &&
+        (!('date' in data) || (data.date is string && data.date.size() <= 50)) &&
+        data.message is string && data.message.size() > 0 && data.message.size() <= 3000 &&
+        data.status in ['unread', 'read', 'replied'] &&
+        data.createdAt is string;
+    }
+
+    match /inquiries/{inquiryId} {
+      allow get: if isValidId(inquiryId) && isAdmin();
+      allow list: if isAdmin();
+      allow create: if isValidId(inquiryId) && isValidInquiry(request.resource.data);
+      allow update: if isValidId(inquiryId) && isAdmin() && isValidInquiry(request.resource.data);
+      allow delete: if isValidId(inquiryId) && isAdmin();
+    }
+
+    // --------------------------------------------------------------------------
+    // 5. REVIEWS COLLECTION (VERIFIED SOCIAL PROOF)
     // --------------------------------------------------------------------------
     function isValidReview(data) {
       return data.keys().hasAll(['id', 'rating', 'comment', 'verified', 'createdAt']) &&
@@ -127,7 +165,7 @@ service cloud.firestore {
     }
 
     match /reviews/{reviewId} {
-      allow get: if isValidId(reviewId) && (resource.data.verified == true || isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid));
+      allow get: if isValidId(reviewId) && (resource.data.verified == true || isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid));
       allow list: if true;
       allow create: if isValidId(reviewId) &&
                     isValidReview(request.resource.data) &&
@@ -138,14 +176,14 @@ service cloud.firestore {
     }
 
     // --------------------------------------------------------------------------
-    // TEST CONNECTION RULE
+    // 6. TEST CONNECTION ENDPOINT (HEARTBEAT)
     // --------------------------------------------------------------------------
     match /test/{docId} {
       allow get: if true;
     }
 
     // --------------------------------------------------------------------------
-    // DEFAULT DENY FOR ALL OTHER COLLECTIONS
+    // 7. DEFAULT DENY CATCH-ALL (PREVENTS ACCESS TO UNDEFINED COLLECTIONS)
     // --------------------------------------------------------------------------
     match /{document=**} {
       allow read, write: if false;

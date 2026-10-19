@@ -2534,6 +2534,61 @@ const handleAdminPhotoUpload = async (req: AuthenticatedRequest, res: Response) 
 app.post('/api/admin/upload-photo', requireAdminAuth, handleAdminPhotoUpload);
 app.post('/api/admin/supabase/upload-photo', requireAdminAuth, handleAdminPhotoUpload);
 
+// Endpoint for instantly updating the artist portrait with the exact uploaded photo
+app.post('/api/artist-photo/upload', async (req: Request, res: Response) => {
+  try {
+    const { data } = req.body;
+    if (!data || typeof data !== 'string') {
+      return res.status(400).json({ error: 'Image data payload is required.' });
+    }
+
+    const matches = data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const base64Data = matches ? matches[2] : data;
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    if (buffer.length === 0) {
+      return res.status(400).json({ error: 'Invalid or empty image file buffer.' });
+    }
+
+    // Auto-orient and encode with sharp
+    const optimizedJpg = await sharp(buffer)
+      .rotate()
+      .jpeg({ quality: 95 })
+      .toBuffer();
+
+    const targets = [
+      path.join(process.cwd(), 'public', 'images', 'artist-photo.jpg'),
+      path.join(process.cwd(), 'public', 'images', 'photographer.jpg'),
+      path.join(process.cwd(), 'public', 'images', '6J8A7958-2.jpg'),
+      path.join(process.cwd(), 'dist', 'images', 'artist-photo.jpg'),
+      path.join(process.cwd(), 'dist', 'images', 'photographer.jpg'),
+      path.join(process.cwd(), 'src', 'assets', 'images', 'sanjay_artist_photo.jpg'),
+    ];
+
+    for (const targetPath of targets) {
+      try {
+        const dir = path.dirname(targetPath);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(targetPath, optimizedJpg);
+      } catch (err) {
+        console.warn('Failed writing to target:', targetPath, err);
+      }
+    }
+
+    console.log(`[Artist Photo] Successfully updated artist portrait (${optimizedJpg.length} bytes)`);
+
+    return res.json({
+      success: true,
+      message: 'Artist portrait successfully updated with your exact photo.',
+      url: `/images/artist-photo.jpg?t=${Date.now()}`
+    });
+  } catch (err: any) {
+    console.error('Error updating artist photo:', err);
+    return res.status(500).json({ error: err.message || 'Failed to update artist photo.' });
+  }
+});
+
+
 // ===========================================================================
 // Real Data Mode / Demo Data Purge Endpoints
 // ===========================================================================

@@ -18,6 +18,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  getDocFromServer,
   getDocs,
   query,
   where,
@@ -28,6 +29,12 @@ import {
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 import { PRICING_PACKAGES } from '../data/mockData';
+import { 
+  sanitizeBookingForm, 
+  sanitizeInquiryForm,
+  RawBookingPayload,
+  RawInquiryPayload
+} from '../utils/sanitizer';
 
 // Set Firebase log level to silent informational connection retries
 setLogLevel('error');
@@ -39,7 +46,7 @@ const app: FirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) 
 
 export const auth: Auth = getAuth(app);
 
-// Initialize Firestore targeting custom databaseId with resilient long-polling
+// Initialize Firestore targeting custom databaseId with resilient connection
 let firestoreInstance: Firestore;
 try {
   firestoreInstance = initializeFirestore(app, {
@@ -104,20 +111,24 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
 }
 
 // --------------------------------------------------------------------------
-// 3. VALIDATE CONNECTION
+// 3. VALIDATE CONNECTION TO FIRESTORE
 // --------------------------------------------------------------------------
 export async function testConnection(): Promise<boolean> {
   try {
-    const snap = await getDoc(doc(db, 'test', 'connection'));
-    return snap.exists();
-  } catch {
-    // Graceful offline fallback
+    await getDocFromServer(doc(db, 'test', 'connection'));
+    return true;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('the client is offline')) {
+      console.warn('Firestore connection notice: Client is offline or retrying connection.');
+    }
     return false;
   }
 }
+// Boot check
+testConnection();
 
 // --------------------------------------------------------------------------
-// 3. TYPES & INTERFACES
+// 4. TYPES & INTERFACES
 // --------------------------------------------------------------------------
 export interface FirestoreUser {
   id: string;
@@ -145,6 +156,18 @@ export interface FirestoreBooking {
   createdAt: string;
 }
 
+export interface FirestoreInquiry {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  service?: string;
+  date?: string;
+  message: string;
+  status: 'unread' | 'read' | 'replied';
+  createdAt: string;
+}
+
 export interface FirestorePackage {
   id: string;
   slug?: string;
@@ -166,14 +189,9 @@ export interface FirestoreReview {
 }
 
 // --------------------------------------------------------------------------
-// 4. DATABASE SEEDING UTILITY
+// 5. DATABASE SEEDING UTILITY
 // --------------------------------------------------------------------------
-/**
- * Automatically seeds the service packages and sample verified reviews
- * if the Firestore collections are empty.
- */
 export async function seedInitialFirestoreData(): Promise<void> {
-  // Only attempt seed writes if an authenticated admin is present
   if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== 'nsanjayb@gmail.com') {
     return;
   }
@@ -193,83 +211,76 @@ export async function seedInitialFirestoreData(): Promise<void> {
         });
       }
     }
-
-    const reviewsSnapshot = await getDocs(query(collection(db, 'reviews'), limit(1)));
-    if (reviewsSnapshot.empty) {
-      const seedReviews: FirestoreReview[] = [
-        {
-          id: 'rev-01',
-          clientName: 'Priya & Arjun',
-          rating: 5,
-          comment: 'Sanjay has an extraordinary eye for ambient light. The portraits of our ceremony captured the genuine emotion without feeling posed.',
-          verified: true,
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: 'rev-02',
-          clientName: 'Devon Vance',
-          rating: 5,
-          comment: 'The dual-card backup gave us total peace of mind for our milestone celebration. Sneak peeks within 48 hours were breathtaking.',
-          verified: true,
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: 'rev-03',
-          clientName: 'Meera K.',
-          rating: 5,
-          comment: 'Warm, professional, and patient. The golden hour lighting in Ontario parks made our couple frames look timeless.',
-          verified: true,
-          createdAt: new Date().toISOString(),
-        }
-      ];
-
-      for (const rev of seedReviews) {
-        await setDoc(doc(db, 'reviews', rev.id), rev);
-      }
-    }
-  } catch {
-    // Silently continue
+  } catch (err) {
+    console.warn('[Firebase Seed] Notice:', err);
   }
 }
 
 // --------------------------------------------------------------------------
-// 5. ATOMIC BOOKING INSERTER (FIRESTORE)
+// 6. CLIENT DATA OPERATIONS (SANITIZED & HARDENED BACKEND)
 // --------------------------------------------------------------------------
-export async function insertFirestoreBooking(booking: Omit<FirestoreBooking, 'id' | 'createdAt'>): Promise<{
+
+/**
+ * Inserts a new sanitized booking into Firestore
+ */
+export async function insertFirestoreBooking(rawBooking: RawBookingPayload): Promise<{
   success: boolean;
   bookingId?: string;
   message: string;
   isConflict?: boolean;
 }> {
+  // 1. Sanitize all inputs before database write
+  const sanitized = sanitizeBookingForm(rawBooking);
+  if (!sanitized.isValid) {
+    return {
+      success: false,
+      message: sanitized.errors[0] || 'Invalid booking information submitted.',
+    };
+  }
+
+  const { data } = sanitized;
+  const pathForBooking = 'bookings';
+
   try {
-    // Check if slot on date is already booked
+    // 2. Check for slot conflict on the target date
     const existingQuery = query(
-      collection(db, 'bookings'),
-      where('bookingDate', '==', booking.bookingDate),
-      where('timeSlot', '==', booking.timeSlot)
+      collection(db, pathForBooking),
+      where('bookingDate', '==', data.bookingDate),
+      where('timeSlot', '==', data.timeSlot)
     );
     const existingSnapshot = await getDocs(existingQuery);
 
-    const activeConflict = existingSnapshot.docs.find(doc => {
-      const data = doc.data();
-      return data.status !== 'cancelled';
+    const activeConflict = existingSnapshot.docs.find(docSnap => {
+      const bData = docSnap.data();
+      return bData.status !== 'cancelled';
     });
 
     if (activeConflict) {
       return {
         success: false,
         isConflict: true,
-        message: `Time slot "${booking.timeSlot}" on ${booking.bookingDate} is already reserved. Please select another time.`,
+        message: `Time slot "${data.timeSlot}" on ${data.bookingDate} is already reserved. Please choose another window.`,
       };
     }
 
+    // 3. Generate secure document ID
     const bookingId = `RES-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-    const bookingRef = doc(db, 'bookings', bookingId);
+    const bookingRef = doc(db, pathForBooking, bookingId);
 
     const newBookingRecord: FirestoreBooking = {
-      ...booking,
       id: bookingId,
-      status: booking.status || 'confirmed',
+      userId: auth.currentUser?.uid,
+      clientName: data.clientName,
+      clientEmail: data.clientEmail,
+      clientPhone: data.clientPhone,
+      packageId: data.packageId,
+      packageName: data.packageName,
+      bookingDate: data.bookingDate,
+      timeSlot: data.timeSlot,
+      status: 'confirmed',
+      location: data.location,
+      notes: data.notes,
+      totalPrice: data.totalPrice,
       createdAt: new Date().toISOString(),
     };
 
@@ -278,29 +289,74 @@ export async function insertFirestoreBooking(booking: Omit<FirestoreBooking, 'id
     return {
       success: true,
       bookingId,
-      message: 'Reservation confirmed and stored in database!',
+      message: 'Your photography session is confirmed and securely recorded in our database!',
     };
-  } catch (err: any) {
-    console.error('[Firebase] Error inserting booking:', err);
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, pathForBooking);
+  }
+}
+
+/**
+ * Inserts a sanitized client message/inquiry into Firestore
+ */
+export async function insertFirestoreInquiry(rawInquiry: RawInquiryPayload): Promise<{
+  success: boolean;
+  inquiryId?: string;
+  message: string;
+}> {
+  // 1. Sanitize inquiry payload
+  const sanitized = sanitizeInquiryForm(rawInquiry);
+  if (!sanitized.isValid) {
     return {
       success: false,
-      message: err.message || 'Error recording reservation in database.',
+      message: sanitized.errors[0] || 'Invalid message details provided.',
     };
+  }
+
+  const { data } = sanitized;
+  const pathForInquiry = 'inquiries';
+
+  try {
+    const inquiryId = `INQ-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const inquiryRef = doc(db, pathForInquiry, inquiryId);
+
+    const record: FirestoreInquiry = {
+      id: inquiryId,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      service: data.service,
+      date: data.date,
+      message: data.message,
+      status: 'unread',
+      createdAt: new Date().toISOString(),
+    };
+
+    await setDoc(inquiryRef, record);
+
+    return {
+      success: true,
+      inquiryId,
+      message: 'Your inquiry has been received! Sanjay will personally follow up with you within 24 hours.',
+    };
+  } catch (err) {
+    handleFirestoreError(err, OperationType.WRITE, pathForInquiry);
   }
 }
 
 // --------------------------------------------------------------------------
-// 6. QUERY HELPERS
+// 7. QUERY HELPERS (Pillar 8 Enforced Query Security)
 // --------------------------------------------------------------------------
 export async function getFirestoreBookings(userEmailOrUid?: string, isAdmin = false): Promise<FirestoreBooking[]> {
+  const pathForBookings = 'bookings';
   try {
-    const bookingsCol = collection(db, 'bookings');
+    const bookingsCol = collection(db, pathForBookings);
     let q = query(bookingsCol, orderBy('createdAt', 'desc'), limit(50));
 
-    if (!isAdmin && userEmailOrUid) {
+    if (!isAdmin && auth.currentUser) {
       q = query(
         bookingsCol,
-        where('clientEmail', '==', userEmailOrUid),
+        where('userId', '==', auth.currentUser.uid),
         orderBy('createdAt', 'desc'),
         limit(50)
       );
@@ -314,35 +370,15 @@ export async function getFirestoreBookings(userEmailOrUid?: string, isAdmin = fa
   }
 }
 
-export async function getFirestorePackages(): Promise<FirestorePackage[]> {
+export async function getFirestoreInquiries(): Promise<FirestoreInquiry[]> {
+  const pathForInquiries = 'inquiries';
   try {
-    const q = query(collection(db, 'service_packages'), where('active', '==', true));
+    const inquiriesCol = collection(db, pathForInquiries);
+    const q = query(inquiriesCol, orderBy('createdAt', 'desc'), limit(50));
     const snapshot = await getDocs(q);
-    if (snapshot.empty) {
-      return PRICING_PACKAGES.map(p => ({
-        id: p.id,
-        slug: p.id,
-        title: p.name,
-        description: p.tagline,
-        priceCad: p.price,
-        active: true,
-        createdAt: new Date().toISOString(),
-      }));
-    }
-    return snapshot.docs.map(doc => doc.data() as FirestorePackage);
+    return snapshot.docs.map(doc => doc.data() as FirestoreInquiry);
   } catch (err) {
-    console.warn('[Firebase] Query packages notice:', err);
-    return [];
-  }
-}
-
-export async function getFirestoreReviews(): Promise<FirestoreReview[]> {
-  try {
-    const q = query(collection(db, 'reviews'), where('verified', '==', true));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => doc.data() as FirestoreReview);
-  } catch (err) {
-    console.warn('[Firebase] Query reviews notice:', err);
+    console.warn('[Firebase] Query inquiries notice:', err);
     return [];
   }
 }

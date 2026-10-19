@@ -11,6 +11,7 @@ import {
   X
 } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
+import { LazyImage } from './LazyImage';
 
 interface PhotoItem {
   id: string;
@@ -258,14 +259,14 @@ export const CuratedGallerySection: React.FC<CuratedGalleryProps> = ({
         A collection shaped by light, authentic expressions, and intimate natural frames.
       </p>
 
-      {/* Mood Tab Controls / Carousel Switcher */}
-      <div className="relative inline-flex items-center justify-center my-6 max-w-full">
-        {/* Previous Carousel Button (Desktop) */}
+      {/* Mood Tab Controls / Carousel Switcher with Working Arrow Buttons */}
+      <div className="relative inline-flex items-center justify-center my-6 max-w-full gap-1.5 sm:gap-2">
+        {/* Previous Carousel Button (Visible & Working on Mobile & Desktop) */}
         <button
           type="button"
           onClick={handlePrevMood}
-          aria-label="Previous mood"
-          className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors mr-2 cursor-pointer shadow-sm active:scale-95"
+          aria-label="Previous mood collection"
+          className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer shadow-sm active:scale-95 shrink-0"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -295,20 +296,20 @@ export const CuratedGallerySection: React.FC<CuratedGalleryProps> = ({
           })}
         </div>
 
-        {/* Next Carousel Button (Desktop) */}
+        {/* Next Carousel Button (Visible & Working on Mobile & Desktop) */}
         <button
           type="button"
           onClick={handleNextMood}
-          aria-label="Next mood"
-          className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors ml-2 cursor-pointer shadow-sm active:scale-95"
+          aria-label="Next mood collection"
+          className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer shadow-sm active:scale-95 shrink-0"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 
-      {/* 3-Photo Grid with Center Featured Card + Touch Swipe Carousel */}
+      {/* 3-Photo Grid with Scroll-Based Framer Motion Parallax + Touch Carousel */}
       <div 
-        className="w-full overflow-hidden"
+        className="w-full relative overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -327,17 +328,19 @@ export const CuratedGallerySection: React.FC<CuratedGalleryProps> = ({
           >
             {currentMood.photos.map((photo) => {
               const isFeatured = !!photo.featured;
+
               return (
                 <div
                   key={photo.id}
                   onClick={() => handleCardClick(photo)}
-                  className={`photo-card cursor-pointer group ${isFeatured ? 'featured' : ''}`}
+                  className={`photo-card cursor-pointer group relative overflow-hidden ${isFeatured ? 'featured' : ''}`}
                 >
-                  <img
+                  <LazyImage
                     src={photo.src}
                     alt={`${photo.title} — ${photo.subtitle}`}
-                    loading="lazy"
-                    className="w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    aspectRatio="auto"
+                    containerClassName="w-full h-full"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
 
                   {/* Featured Gold Badge on center card */}
@@ -456,10 +459,11 @@ export const CuratedGallerySection: React.FC<CuratedGalleryProps> = ({
                     }}
                     className="group relative aspect-[3/4] rounded-lg overflow-hidden border border-[var(--border)] bg-[var(--secondary)] cursor-pointer"
                   >
-                    <img
+                    <LazyImage
                       src={photo.src}
                       alt={photo.subtitle}
-                      loading="lazy"
+                      aspectRatio="3/4"
+                      containerClassName="w-full h-full"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">

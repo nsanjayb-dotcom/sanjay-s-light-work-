@@ -30,6 +30,7 @@ const COMMITMENTS = [
 
 /**
  * About section matching https://lightworks-studio-gold.lovable.app
+ * Featuring locked official portrait of Sanjay Naveen.
  */
 export const AboutSection: React.FC<AboutSectionProps> = ({
   onOpenBooking,
@@ -61,13 +62,21 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         </h2>
 
         <div className="about-layout">
-          {/* Artist Photo */}
-          <div className="artist-photo">
+          {/* Official Artist Portrait */}
+          <div className="artist-photo relative rounded overflow-hidden shadow-xl border border-[var(--border)] bg-[var(--card)]">
             <img
-              src="/images/waterfront-portrait.jpg"
-              alt="Sanjay Naveen, photographer, outdoors by the water in natural light"
+              src="/images/sanjay-portrait.jpg"
+              alt="Sanjay Naveen, photographer portrait"
               loading="lazy"
-              className="w-full aspect-[3/4] object-cover rounded"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              className="w-full aspect-[2/3] sm:aspect-[3/4] object-cover object-top rounded shadow-md transition-all duration-500 hover:scale-[1.015]"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.src.includes('artist-photo.jpg')) {
+                  target.src = '/images/artist-photo.jpg';
+                }
+              }}
             />
           </div>
 

@@ -6,10 +6,15 @@ import {
   ArrowLeft, 
   X, 
   Maximize2,
-  Sparkles,
   Camera,
-  Layers
+  Layers,
+  LayoutGrid,
+  Columns,
+  Search,
+  SlidersHorizontal,
+  ChevronRight
 } from 'lucide-react';
+import { LazyImage } from './LazyImage';
 
 interface GalleryPageProps {
   items: GalleryItem[];
@@ -18,122 +23,47 @@ interface GalleryPageProps {
   isDark: boolean;
 }
 
-interface PhotoCardData {
-  src: string;
-  title: string;
-  featured?: boolean;
-  category?: string;
-  aspectRatio?: string;
-}
-
 interface CollectionSuite {
   id: string;
   name: string;
+  subtitle: string;
   dotClass: string;
-  photos: PhotoCardData[];
+  dotColor: string;
+  description: string;
 }
 
-// 4 Core Master Collections Matching https://lightworks-studio-gold.lovable.app/archive
-const ARCHIVE_COLLECTIONS: CollectionSuite[] = [
+const MOOD_SUITES: CollectionSuite[] = [
   {
     id: 'golden-grace',
     name: 'Golden Grace',
+    subtitle: 'Warm light & heirloom bridal silk',
     dotClass: 'bg-[#D4AF37]',
-    photos: [
-      {
-        src: '/images/golden-grace-1.jpg',
-        title: 'Warm light',
-        featured: false,
-        category: 'TRADITIONAL',
-      },
-      {
-        src: '/images/golden-grace-2.jpg',
-        title: 'Golden hour',
-        featured: true,
-        category: 'EDITORIAL',
-      },
-      {
-        src: '/images/golden-grace-3.jpg',
-        title: 'Fleeting glow',
-        featured: false,
-        category: 'PORTRAIT',
-      },
-    ],
+    dotColor: '#D4AF37',
+    description: 'Golden Grace celebrates tradition through warm tonal grading, natural directional daylight, and heirloom silks.',
   },
   {
     id: 'emerald-harmony',
     name: 'Emerald Harmony',
+    subtitle: 'Forest greens & natural canopy',
     dotClass: 'bg-[#2E7D32]',
-    photos: [
-      {
-        src: '/images/emerald-harmony-1.jpg',
-        title: 'Silk and Current',
-        featured: false,
-        category: 'HERITAGE',
-      },
-      {
-        src: '/images/emerald-harmony-2.jpg',
-        title: 'Veiled Gaze',
-        featured: true,
-        category: 'ATMOSPHERE',
-      },
-      {
-        src: '/images/emerald-harmony-3.jpg',
-        title: 'Stone and Stream',
-        featured: false,
-        category: 'LANDSCAPE',
-      },
-    ],
+    dotColor: '#2E7D32',
+    description: 'Emerald Harmony explores tradition beyond familiar spaces, placing cultural portraits in lush Ontario landscapes.',
   },
   {
     id: 'still-vision',
     name: 'Still Vision',
+    subtitle: 'Low-key chiaroscuro & introspection',
     dotClass: 'bg-[#8C6207]',
-    photos: [
-      {
-        src: '/images/still-vision-1.jpg',
-        title: 'Wool and Stripe',
-        featured: false,
-        category: 'PORTRAIT',
-      },
-      {
-        src: '/images/still-vision-2.jpg',
-        title: 'Over the Frames',
-        featured: true,
-        category: 'EDITORIAL',
-      },
-      {
-        src: '/images/still-vision-3.jpg',
-        title: 'Between Frames',
-        featured: false,
-        category: 'STUDY',
-      },
-    ],
+    dotColor: '#8C6207',
+    description: 'Still Vision focuses on the space between action and stillness, where quiet expressions reveal honest character.',
   },
   {
     id: 'misty-pine',
     name: 'Misty Pine',
+    subtitle: 'Ontario boreal fog & weathered timber',
     dotClass: 'bg-[#4A6572]',
-    photos: [
-      {
-        src: '/images/misty-pine-1.jpg',
-        title: 'Bridge in the Pines',
-        featured: false,
-        category: 'ONTARIO NATURE',
-      },
-      {
-        src: '/images/misty-pine-2.jpg',
-        title: 'Quiet Observer',
-        featured: true,
-        category: 'PANORAMIC',
-      },
-      {
-        src: '/images/misty-pine-3.jpg',
-        title: 'Into the Amber',
-        featured: false,
-        category: 'ATMOSPHERE',
-      },
-    ],
+    dotColor: '#4A6572',
+    description: 'Misty Pine captures cool boreal mist, deep slate indigo, and evergreen ridges across Canadian wilderness.',
   },
 ];
 
@@ -143,13 +73,11 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
   onBackToPortfolio,
   isDark,
 }) => {
-  const [activeModalPhoto, setActiveModalPhoto] = useState<{
-    src: string;
-    title: string;
-    mood: string;
-  } | null>(null);
-
   const [activeCategory, setActiveCategory] = useState<GalleryCategory | 'all'>('all');
+  const [selectedMoodSuite, setSelectedMoodSuite] = useState<string | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'masonry' | 'curated' | 'exhibition'>('masonry');
+  const [activeModalPhoto, setActiveModalPhoto] = useState<GalleryItem | null>(null);
 
   const categories: { key: GalleryCategory | 'all'; label: string }[] = [
     { key: 'all', label: 'All Works' },
@@ -160,53 +88,82 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
     { key: 'events', label: 'Events' },
   ];
 
-  // Any additional items in CMS / mock data beyond the 12 primary mood suite photos
-  const additionalItems = useMemo(() => {
-    const coreUrls = new Set(
-      ARCHIVE_COLLECTIONS.flatMap((col) => col.photos.map((p) => p.src))
-    );
-    return items.filter((item) => !coreUrls.has(item.imageUrl));
-  }, [items]);
+  // Filter items according to search, category, and selected mood suite
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
+      // 1. Category match
+      const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
 
-  const filteredAdditionalItems = useMemo(() => {
-    if (activeCategory === 'all') return additionalItems;
-    return additionalItems.filter((i) => i.category === activeCategory);
-  }, [additionalItems, activeCategory]);
+      // 2. Mood suite match
+      let matchesMood = true;
+      if (selectedMoodSuite !== 'all') {
+        const titleLower = item.title.toLowerCase();
+        const descLower = (item.description || '').toLowerCase();
+        const urlLower = item.imageUrl.toLowerCase();
+        const moodKey = selectedMoodSuite.toLowerCase();
 
-  const handlePhotoClick = (photo: PhotoCardData, mood: string) => {
+        if (moodKey === 'golden-grace') {
+          matchesMood = urlLower.includes('golden-grace') || titleLower.includes('golden') || descLower.includes('golden');
+        } else if (moodKey === 'emerald-harmony') {
+          matchesMood = urlLower.includes('emerald-harmony') || titleLower.includes('emerald') || descLower.includes('emerald');
+        } else if (moodKey === 'still-vision') {
+          matchesMood = urlLower.includes('still-vision') || titleLower.includes('still') || descLower.includes('still');
+        } else if (moodKey === 'misty-pine') {
+          matchesMood = urlLower.includes('misty-pine') || titleLower.includes('misty') || descLower.includes('misty') || titleLower.includes('pine');
+        }
+      }
+
+      // 3. Search query match
+      const query = searchQuery.trim().toLowerCase();
+      const matchesSearch = query === '' || 
+        item.title.toLowerCase().includes(query) ||
+        (item.description && item.description.toLowerCase().includes(query)) ||
+        (item.location && item.location.toLowerCase().includes(query)) ||
+        item.category.toLowerCase().includes(query);
+
+      return matchesCategory && matchesMood && matchesSearch;
+    });
+  }, [items, activeCategory, selectedMoodSuite, searchQuery]);
+
+  const handleOpenPhoto = (item: GalleryItem) => {
     soundEngine.playClick();
     soundEngine.hapticTap();
-    setActiveModalPhoto({
-      src: photo.src,
-      title: photo.title,
-      mood,
-    });
+    const originalIndex = items.findIndex((i) => i.id === item.id);
+    onSelectPhoto(item, originalIndex !== -1 ? originalIndex : 0);
   };
 
-  const handleOpenFullLightbox = (photoSrc: string, photoTitle: string, mood: string) => {
-    const existingIndex = items.findIndex((i) => i.imageUrl === photoSrc);
-    if (existingIndex !== -1) {
-      onSelectPhoto(items[existingIndex], existingIndex);
-    } else {
-      const tempItem: GalleryItem = {
-        id: `arch-${Date.now()}`,
-        title: `${mood} · ${photoTitle}`,
-        category: 'portraits',
-        aspectRatio: 'portrait',
-        imageUrl: photoSrc,
-        year: '2026',
-        description: `Natural light photograph from the ${mood} collection in Ontario, Canada.`,
+  // Group photos by mood suite for Curated Suites View
+  const photosBySuite = useMemo(() => {
+    return MOOD_SUITES.map((suite) => {
+      const suitePhotos = items.filter((item) => {
+        const urlLower = item.imageUrl.toLowerCase();
+        const titleLower = item.title.toLowerCase();
+        const descLower = (item.description || '').toLowerCase();
+
+        if (suite.id === 'golden-grace') {
+          return urlLower.includes('golden-grace') || titleLower.includes('golden');
+        } else if (suite.id === 'emerald-harmony') {
+          return urlLower.includes('emerald-harmony') || titleLower.includes('emerald');
+        } else if (suite.id === 'still-vision') {
+          return urlLower.includes('still-vision') || titleLower.includes('still');
+        } else if (suite.id === 'misty-pine') {
+          return urlLower.includes('misty-pine') || titleLower.includes('misty');
+        }
+        return false;
+      });
+
+      return {
+        ...suite,
+        photos: suitePhotos,
       };
-      onSelectPhoto(tempItem, 0);
-    }
-    setActiveModalPhoto(null);
-  };
+    });
+  }, [items]);
 
   return (
     <div className={`w-full min-h-screen text-left transition-colors duration-300 select-none ${
       isDark ? 'text-white' : 'text-[#1A1A1A]'
     }`}>
-      {/* 1. Sticky Editorial Site Header (Matching Lovable /archive) */}
+      {/* 1. Sticky Editorial Site Header */}
       <header className="site-header">
         <div className="header-inner">
           <button
@@ -236,110 +193,65 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
         </div>
       </header>
 
-      {/* 2. Main Gallery Section Wrap */}
-      <main className="section-wrap gallery-section">
+      {/* 2. Main Gallery Wrap */}
+      <main className="section-wrap py-10 sm:py-16">
         {/* Eyebrow & Main Section Heading */}
-        <div className="eyebrow justify-center">The complete archive</div>
-        <h1 className="section-heading text-center">EVERY STUDY IN LIGHT</h1>
-        <p className="section-description max-w-xl mx-auto mt-2 text-xs sm:text-sm text-[var(--muted-foreground)] text-center">
-          The complete photography archive of Sanjay's Lightworks, organised by mood: Golden Grace, Emerald Harmony, Still Vision and Misty Pine.
-        </p>
-
-        {/* Quick-Jump Mood Links */}
-        <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
-          {ARCHIVE_COLLECTIONS.map((col) => (
-            <button
-              key={col.id}
-              type="button"
-              onClick={() => {
-                soundEngine.playSwitch();
-                document.getElementById(col.id)?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="button-editorial text-xs px-3.5 py-1.5 rounded-full inline-flex items-center gap-2 cursor-pointer hover:border-[var(--gold)] transition-colors"
-            >
-              <span className={`w-2 h-2 rounded-full ${col.dotClass}`} />
-              <span className="font-sans font-medium">{col.name}</span>
-            </button>
-          ))}
-          {additionalItems.length > 0 && (
-            <button
-              type="button"
-              onClick={() => {
-                soundEngine.playSwitch();
-                document.getElementById('additional-archives')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="button-editorial text-xs px-3.5 py-1.5 rounded-full inline-flex items-center gap-1.5 cursor-pointer hover:border-[var(--gold)]"
-            >
-              <Layers className="w-3 h-3 text-[var(--gold)]" />
-              <span>More Studies ({additionalItems.length})</span>
-            </button>
-          )}
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
+          <div className="eyebrow justify-center">The complete photo archive</div>
+          <h1 className="section-heading text-center text-4xl sm:text-5xl font-serif">
+            EVERY STUDY IN LIGHT
+          </h1>
+          <p className="section-description max-w-xl mx-auto text-xs sm:text-sm text-[var(--muted-foreground)]">
+            Every unscripted portrait, traditional ceremony, and atmospheric Ontario landscape presented in full, original un-cropped composition.
+          </p>
         </div>
 
-        {/* 3. The 4 Core Mood Sections (Exact Lovable Layout & Structure) */}
-        {ARCHIVE_COLLECTIONS.map((col) => (
-          <section
-            key={col.id}
-            id={col.id}
-            className="mt-14 sm:mt-20 scroll-mt-28"
-            aria-labelledby={col.name}
-          >
-            <h2 id={col.name} className="serif text-3xl mb-6 text-center text-[var(--foreground)] font-serif">
-              {col.name}
-            </h2>
+        {/* 3. Interactive Filter Bar & View Mode Switcher */}
+        <div className="space-y-4 mb-10 pb-6 border-b border-[var(--border)]">
+          {/* Quick-Jump Mood Links */}
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={() => {
+                soundEngine.playSwitch();
+                setSelectedMoodSuite('all');
+              }}
+              className={`text-xs px-3.5 py-1.5 rounded-full inline-flex items-center gap-1.5 cursor-pointer transition-all border ${
+                selectedMoodSuite === 'all'
+                  ? 'border-[var(--gold)] bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-xs'
+                  : 'border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-[var(--gold)]'
+              }`}
+            >
+              <span>All Collections</span>
+            </button>
 
-            <div className="photo-grid">
-              {col.photos.map((photo, pIdx) => {
-                const isFeatured = pIdx === 1 || photo.featured;
-                return (
-                  <div
-                    key={`${col.id}-${photo.title}`}
-                    className={`photo-card ${isFeatured ? 'featured' : ''} group`}
-                  >
-                    <button
-                      type="button"
-                      className="block h-full w-full cursor-pointer focus:outline-none"
-                      aria-label={`Expand ${photo.title}`}
-                      onClick={() => handlePhotoClick(photo, col.name)}
-                    >
-                      <img
-                        src={photo.src}
-                        alt={`${col.name} — ${photo.title}`}
-                        loading="lazy"
-                        width={768}
-                        height={1152}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        onError={(e) => {
-                          // Guaranteed fallback
-                          (e.target as HTMLImageElement).src = '/images/still-vision-1.jpg';
-                        }}
-                      />
-                    </button>
-                    <div className="photo-caption">
-                      <span>{col.name} · {photo.title}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+            {MOOD_SUITES.map((col) => {
+              const isSelected = selectedMoodSuite === col.id;
+              return (
+                <button
+                  key={col.id}
+                  type="button"
+                  onClick={() => {
+                    soundEngine.playSwitch();
+                    setSelectedMoodSuite(isSelected ? 'all' : col.id);
+                  }}
+                  className={`text-xs px-3.5 py-1.5 rounded-full inline-flex items-center gap-2 cursor-pointer transition-all border ${
+                    isSelected
+                      ? 'border-[var(--gold)] bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-xs'
+                      : 'border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-[var(--gold)]'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${col.dotClass}`} />
+                  <span className="font-sans">{col.name}</span>
+                </button>
+              );
+            })}
+          </div>
 
-        {/* 4. Additional Archive Studies & Custom Uploads */}
-        {additionalItems.length > 0 && (
-          <section id="additional-archives" className="mt-20 sm:mt-24 pt-12 border-t border-[var(--border)] scroll-mt-28">
-            <div className="text-center space-y-2 mb-8">
-              <div className="eyebrow justify-center">Extended photographic collection</div>
-              <h2 className="serif text-3xl font-serif text-[var(--foreground)]">
-                ADDITIONAL LIGHTWORKS &amp; COMMISSIONS
-              </h2>
-              <p className="text-xs text-[var(--muted-foreground)] max-w-lg mx-auto">
-                Explore dedicated portraiture, traditional rites, and landscape studies across Ontario.
-              </p>
-            </div>
-
-            {/* Category Filter Chips */}
-            <div className="flex items-center justify-center gap-1.5 flex-wrap mb-8">
+          {/* Category Tabs & View Mode Row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-2">
+            {/* Category Filter Buttons */}
+            <div className="flex items-center justify-center gap-1.5 flex-wrap">
               {categories.map((cat) => {
                 const isActive = activeCategory === cat.key;
                 return (
@@ -350,9 +262,9 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
                       soundEngine.playSwitch();
                       setActiveCategory(cat.key);
                     }}
-                    className={`px-3.5 py-1.5 text-xs font-sans uppercase tracking-wider transition-all rounded-full cursor-pointer border ${
+                    className={`px-3 py-1.5 text-xs font-sans uppercase tracking-wider transition-all rounded-md cursor-pointer border ${
                       isActive
-                        ? 'border-[var(--gold)] bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-sm'
+                        ? 'border-[var(--gold)] bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-xs'
                         : 'border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-[var(--gold)]'
                     }`}
                   >
@@ -362,53 +274,286 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
               })}
             </div>
 
-            {/* Additional Photos Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-[970px] mx-auto">
-              {filteredAdditionalItems.map((item, index) => {
-                const actualIndex = items.findIndex((i) => i.id === item.id);
-                return (
-                  <div
-                    key={item.id}
-                    onClick={() => {
-                      soundEngine.playClick();
-                      onSelectPhoto(item, actualIndex !== -1 ? actualIndex : index);
-                    }}
-                    className="photo-card group cursor-pointer"
-                  >
-                    <div className="relative aspect-[3/4] overflow-hidden bg-[var(--secondary)]">
-                      <img
-                        src={item.imageUrl}
-                        alt={item.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/images/still-vision-1.jpg';
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end text-left">
-                        <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider">
-                          {item.category}
-                        </span>
-                        <h4 className="font-serif text-sm font-bold text-white truncate">
-                          {item.title}
-                        </h4>
+            {/* View Mode Switcher */}
+            <div className="flex items-center gap-2 bg-[var(--secondary)] p-1 rounded-lg border border-[var(--border)]">
+              <button
+                type="button"
+                onClick={() => {
+                  soundEngine.playSwitch();
+                  setViewMode('masonry');
+                }}
+                title="Masonry Wall View (Uncropped Natural Proportions)"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                  viewMode === 'masonry'
+                    ? 'bg-[var(--card)] text-[var(--gold)] font-bold shadow-xs'
+                    : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Masonry Wall</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEngine.playSwitch();
+                  setViewMode('curated');
+                }}
+                title="Curated Mood Suites"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                  viewMode === 'curated'
+                    ? 'bg-[var(--card)] text-[var(--gold)] font-bold shadow-xs'
+                    : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Curated Suites</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  soundEngine.playSwitch();
+                  setViewMode('exhibition');
+                }}
+                title="Exhibition Showcase Mode"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                  viewMode === 'exhibition'
+                    ? 'bg-[var(--card)] text-[var(--gold)] font-bold shadow-xs'
+                    : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                }`}
+              >
+                <Columns className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Exhibition</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Photo Count Header */}
+        <div className="flex items-center justify-between text-xs text-[var(--muted-foreground)] mb-6 px-1">
+          <span>
+            Showing <strong className="text-[var(--foreground)]">{filteredItems.length}</strong> master curations
+          </span>
+          {activeCategory !== 'all' || selectedMoodSuite !== 'all' ? (
+            <button
+              type="button"
+              onClick={() => {
+                soundEngine.playClick();
+                setActiveCategory('all');
+                setSelectedMoodSuite('all');
+              }}
+              className="text-[var(--gold)] hover:underline cursor-pointer"
+            >
+              Reset all filters
+            </button>
+          ) : null}
+        </div>
+
+        {/* 4. GALLERY RENDER LAYOUTS (100% Un-Cropped & Authentic) */}
+        {filteredItems.length === 0 ? (
+          <div className="text-center py-20 border border-dashed border-[var(--border)] rounded-2xl p-8">
+            <Camera className="w-8 h-8 text-[var(--gold)] mx-auto mb-3 opacity-60" />
+            <h3 className="font-serif text-lg font-bold">No photographs found</h3>
+            <p className="text-xs text-[var(--muted-foreground)] mt-1">
+              Try adjusting your category filter or search query.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveCategory('all');
+                setSelectedMoodSuite('all');
+                setSearchQuery('');
+              }}
+              className="mt-4 px-4 py-2 rounded-full button-editorial text-xs font-semibold"
+            >
+              Show All Works
+            </button>
+          </div>
+        ) : viewMode === 'masonry' ? (
+          /* =================================================================
+             MODE A: MASONRY WALL (Preserves natural height & aspect ratio)
+             ================================================================= */
+          <div className="gallery-masonry-container">
+            {filteredItems.map((item, idx) => (
+              <div key={item.id} className="gallery-masonry-item">
+                <div
+                  onClick={() => handleOpenPhoto(item)}
+                  className="archive-photo-card group cursor-pointer"
+                >
+                  {/* Photo container without fixed height or aggressive cropping */}
+                  <div className="relative w-full overflow-hidden bg-[var(--secondary)]">
+                    <LazyImage
+                      src={item.imageUrl}
+                      alt={item.title}
+                      aspectRatio="auto"
+                      containerClassName="w-full"
+                      className="w-full h-auto object-contain block transition-transform duration-700 group-hover:scale-[1.02]"
+                    />
+
+                    {/* Subtle Hover Action Viewfinder */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+                      <div className="w-10 h-10 rounded-full bg-black/75 text-white flex items-center justify-center shadow-lg border border-white/20 transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                        <Maximize2 className="w-4 h-4 text-[var(--gold)]" />
                       </div>
                     </div>
-                    <div className="photo-caption">
-                      <span>{item.category.toUpperCase()} · {item.title}</span>
-                    </div>
                   </div>
-                );
-              })}
-            </div>
-          </section>
+
+                  {/* Clean Typography Metadata (Zero-Pill Compliance) */}
+                  <div className="p-3.5 sm:p-4 text-left border-t border-[var(--border)] bg-[var(--card)] flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 text-[10px] text-[var(--gold)] font-bold uppercase tracking-wider">
+                        <span>{item.category}</span>
+                        {item.year && (
+                          <>
+                            <span aria-hidden="true" className="opacity-40">·</span>
+                            <span className="text-[var(--muted-foreground)]">{item.year}</span>
+                          </>
+                        )}
+                      </div>
+                      <h3 className="font-serif text-sm font-semibold text-[var(--foreground)] truncate mt-1">
+                        {item.title}
+                      </h3>
+                      {item.description && (
+                        <p className="text-[11px] text-[var(--muted-foreground)] line-clamp-2 mt-1 leading-relaxed">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                    <span className="text-[10px] font-mono text-[var(--muted-foreground)] font-bold shrink-0 mt-0.5">
+                      0{idx + 1}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : viewMode === 'curated' ? (
+          /* =================================================================
+             MODE B: CURATED SUITES (Grouped into the 4 Iconic Collections)
+             ================================================================= */
+          <div className="space-y-16 sm:space-y-24">
+            {photosBySuite.map((suite) => {
+              if (suite.photos.length === 0) return null;
+              return (
+                <section
+                  key={suite.id}
+                  id={suite.id}
+                  className="scroll-mt-28"
+                  aria-labelledby={`heading-${suite.id}`}
+                >
+                  <div className="text-center max-w-xl mx-auto mb-8 space-y-2">
+                    <div className="flex items-center justify-center gap-2">
+                      <span className={`w-2.5 h-2.5 rounded-full ${suite.dotClass}`} />
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-[var(--gold)]">
+                        SIGNATURE MOOD SUITE
+                      </span>
+                    </div>
+                    <h2
+                      id={`heading-${suite.id}`}
+                      className="font-serif text-3xl sm:text-4xl font-bold text-[var(--foreground)]"
+                    >
+                      {suite.name}
+                    </h2>
+                    <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
+                      {suite.description}
+                    </p>
+                  </div>
+
+                  {/* Responsive Grid with Complete Aspect Ratio Retention */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {suite.photos.map((photo, pIdx) => (
+                      <div
+                        key={photo.id}
+                        onClick={() => handleOpenPhoto(photo)}
+                        className="archive-photo-card group cursor-pointer flex flex-col justify-between"
+                      >
+                        <div className="relative w-full overflow-hidden bg-[var(--secondary)]">
+                          <LazyImage
+                            src={photo.imageUrl}
+                            alt={photo.title}
+                            aspectRatio="auto"
+                            containerClassName="w-full"
+                            className="w-full h-auto object-contain block transition-transform duration-500 group-hover:scale-[1.02]"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <Maximize2 className="w-5 h-5 text-white" />
+                          </div>
+                        </div>
+
+                        <div className="p-4 border-t border-[var(--border)] text-left bg-[var(--card)]">
+                          <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
+                            {photo.category}
+                          </span>
+                          <h4 className="font-serif text-sm font-semibold text-[var(--foreground)] mt-0.5">
+                            {photo.title}
+                          </h4>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        ) : (
+          /* =================================================================
+             MODE C: EXHIBITION SHOWCASE (Spacious 2-column editorial showcase)
+             ================================================================= */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+            {filteredItems.map((item, idx) => (
+              <article
+                key={item.id}
+                onClick={() => handleOpenPhoto(item)}
+                className="archive-photo-card group cursor-pointer flex flex-col justify-between"
+              >
+                <div className="relative w-full overflow-hidden bg-[var(--secondary)]">
+                  <LazyImage
+                    src={item.imageUrl}
+                    alt={item.title}
+                    aspectRatio="auto"
+                    containerClassName="w-full"
+                    className="w-full h-auto object-contain block transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Maximize2 className="w-3.5 h-3.5 text-[var(--gold)]" />
+                  </div>
+                </div>
+
+                <div className="p-5 sm:p-6 text-left border-t border-[var(--border)] bg-[var(--card)] space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider">
+                      {item.category}
+                    </span>
+                    <span className="text-[10px] font-mono text-[var(--muted-foreground)]">
+                      PLATE #{idx + 1}
+                    </span>
+                  </div>
+                  <h3 className="font-serif text-lg font-bold text-[var(--foreground)]">
+                    {item.title}
+                  </h3>
+                  {item.description && (
+                    <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
+                      {item.description}
+                    </p>
+                  )}
+                  {item.location && (
+                    <div className="pt-2 text-[10px] text-[var(--muted-foreground)] flex items-center gap-1 font-mono">
+                      <span>LOCATION:</span>
+                      <strong className="text-[var(--foreground)]">{item.location}</strong>
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
         )}
 
-        {/* Archive Footer Note */}
+        {/* 5. Archive Footer Note */}
         <div className="mt-20 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted-foreground)]">
           <div className="flex items-center gap-2">
-            <Camera className="w-3.5 h-3.5 text-[var(--gold)]" />
-            <span>AUTHENTIC UNPOSED PHOTOGRAPHY ACROSS ONTARIO, CANADA</span>
+            <Camera className="w-3.5 h-3.5 text-[var(--gold)] shrink-0" />
+            <span>AUTHENTIC UNPOSED PHOTOGRAPHY ACROSS ONTARIO, CANADA · FULL RESOLUTION ARCHIVE</span>
           </div>
           <button
             type="button"
@@ -422,58 +567,6 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({
           </button>
         </div>
       </main>
-
-      {/* 5. Lightbox Modal (Exact Lovable Editorial Modal Lightbox) */}
-      <AnimatePresence>
-        {activeModalPhoto && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
-            onClick={() => setActiveModalPhoto(null)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="editorial-modal lightbox relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={() => setActiveModalPhoto(null)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition-colors z-10 cursor-pointer shadow-md"
-                aria-label="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              {/* High-Resolution Photograph Display */}
-              <img
-                src={activeModalPhoto.src}
-                alt={`${activeModalPhoto.mood} — ${activeModalPhoto.title}`}
-                className="w-full object-contain rounded-md shadow-lg"
-              />
-
-              {/* Caption & Actions */}
-              <div className="flex items-center justify-between mt-3 px-1">
-                <span className="serif text-sm text-[var(--foreground)] font-serif">
-                  {activeModalPhoto.mood} · {activeModalPhoto.title}
-                </span>
-
-                <button
-                  type="button"
-                  onClick={() => handleOpenFullLightbox(activeModalPhoto.src, activeModalPhoto.title, activeModalPhoto.mood)}
-                  className="text-xs text-[var(--gold)] font-medium hover:underline inline-flex items-center gap-1 cursor-pointer transition-colors"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span>Full Lightbox</span>
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

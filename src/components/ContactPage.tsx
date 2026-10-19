@@ -15,7 +15,8 @@ import {
 } from 'lucide-react';
 import { getWhatsAppUrl, WHATSAPP_DISPLAY } from '../utils/social';
 import { PHOTOGRAPHER_EMAIL, PHOTOGRAPHER_PHONE } from '../utils/calendar';
-import { sanitizeInput, isValidEmail } from '../utils/security';
+import { sanitizeInquiryForm } from '../utils/sanitizer';
+import { insertFirestoreInquiry } from '../lib/firebase';
 import { showToast } from './SupabaseToast';
 
 interface ContactPageProps {
@@ -38,13 +39,18 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanName = sanitizeInput(name);
-    const cleanContact = sanitizeInput(contact);
-    const cleanMessage = sanitizeInput(message);
+    const sanitized = sanitizeInquiryForm({
+      name,
+      email: contact,
+      phone: contact,
+      service,
+      date: 'Upcoming / Inquire',
+      message,
+    });
 
-    if (!cleanName || !cleanContact) {
+    if (!sanitized.isValid) {
       soundEngine.playError();
-      showToast('Please provide your name and contact info.', 'error', 'Missing Information');
+      showToast(sanitized.errors[0] || 'Please provide your name and valid contact details.', 'error', 'Invalid Input');
       return;
     }
 
@@ -52,24 +58,33 @@ export const ContactPage: React.FC<ContactPageProps> = ({
     soundEngine.playClick();
 
     try {
-      // Send contact via backend proxy
-      await fetch('/api/contact/enquire', {
+      // 1. Store client inquiry in Google Firebase Firestore backend
+      await insertFirestoreInquiry({
+        name: sanitized.data.name,
+        email: sanitized.data.email,
+        phone: sanitized.data.phone,
+        service: sanitized.data.service,
+        date: sanitized.data.date,
+        message: sanitized.data.message,
+      });
+
+      // 2. Mirror notification to server email proxy
+      fetch('/api/contact/enquire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: cleanName,
-          contact: cleanContact,
-          service,
-          date: 'Upcoming / Inquire',
-          note: cleanMessage || 'Direct inquiry from website contact page',
+          name: sanitized.data.name,
+          contact: sanitized.data.email || sanitized.data.phone,
+          service: sanitized.data.service,
+          date: sanitized.data.date,
+          note: sanitized.data.message,
         }),
-      });
+      }).catch(err => console.warn('Server email notification caught:', err));
 
       soundEngine.playSuccess();
       setIsSubmitted(true);
-      showToast('Thank you! Sanjay will reply within 24 hours.', 'success', 'Message Sent');
+      showToast('Thank you! Your message is securely saved in our studio database. Sanjay will reply within 24 hours.', 'success', 'Message Received');
     } catch {
-      // Fallback success feedback
       soundEngine.playSuccess();
       setIsSubmitted(true);
     } finally {
